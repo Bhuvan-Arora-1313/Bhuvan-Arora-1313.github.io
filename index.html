@@ -250,6 +250,15 @@
     footer { margin-top: 40px; }
   }
   #cycle svg { max-width: 100%; height: auto; display: block; } .cyc { transform-box: fill-box; transform-origin: center; }
+
+  #trail { position: fixed; right: 10px; top: 50%; transform: translateY(-50%); z-index: 30; background: rgba(253,250,242,.86); border: 1.5px solid rgba(33,31,27,.25);
+    border-radius: 14px; padding: 6px 2px; box-shadow: 0 4px 14px rgba(0,0,0,.08); }
+  #trail svg { display: block; overflow: visible; }
+  #trail .stop:hover circle { fill: #fbe9a0; }
+  #trail .stop.done circle { fill: #d1584a; }
+  @media (max-width: 1100px) { #trail { right: 4px; transform: translateY(-50%) scale(.72); transform-origin: right center; } }
+  @media (max-width: 760px) { #trail { display: none; } #progress { display: block; } }
+  #progress { display: none; position: fixed; top: 0; left: 0; height: 4px; width: 0; background: linear-gradient(90deg,#b9471a,#e0b040); z-index: 31; }
   footer { text-align: center; position: relative; z-index: 2; font-family: "Kalam"; font-size: 1.3rem; color: var(--muted); margin-top: 90px; }
 
   @media (max-width: 1100px) {
@@ -275,8 +284,16 @@
   </filter>
 </svg>
 <canvas id="net" aria-hidden="true"></canvas>
+<div id="progress"></div>
+<div id="trail" aria-hidden="true"><svg width="100" height="460" viewBox="0 0 100 460">
+  <path d="M34 30 C34 70, 62 70, 62 110 C62 150, 30 150, 30 190 C30 230, 64 230, 64 270 C64 310, 32 310, 32 350 C32 390, 58 390, 58 430" fill="none" stroke="#c9a97a" stroke-width="10" stroke-linecap="round" opacity=".55"/>
+  <path id="road" d="M34 30 C34 70, 62 70, 62 110 C62 150, 30 150, 30 190 C30 230, 64 230, 64 270 C64 310, 32 310, 32 350 C32 390, 58 390, 58 430" fill="none" stroke="#7a5c33" stroke-width="2" stroke-dasharray="5 6" stroke-linecap="round"/>
+  <text x="4" y="90" font-size="13">🌴</text><text x="76" y="150" font-size="13">🌳</text><text x="2" y="250" font-size="13">🌲</text><text x="78" y="330" font-size="13">🌴</text><text x="6" y="410" font-size="13">🌳</text><g class="stop" data-t="top" style="cursor:pointer"><circle cx="34" cy="30" r="7" fill="#fffdf6" stroke="#211f1b" stroke-width="2"/><text x="46" y="34" text-anchor="start" font-family="Kalam" font-size="11" fill="#211f1b">hi!</text></g><g class="stop" data-t="papers" style="cursor:pointer"><circle cx="62" cy="110" r="7" fill="#fffdf6" stroke="#211f1b" stroke-width="2"/><text x="50" y="114" text-anchor="end" font-family="Kalam" font-size="11" fill="#211f1b">papers</text></g><g class="stop" data-t="research" style="cursor:pointer"><circle cx="30" cy="190" r="7" fill="#fffdf6" stroke="#211f1b" stroke-width="2"/><text x="42" y="194" text-anchor="start" font-family="Kalam" font-size="11" fill="#211f1b">research</text></g><g class="stop" data-t="cycle-title" style="cursor:pointer"><circle cx="64" cy="270" r="7" fill="#fffdf6" stroke="#211f1b" stroke-width="2"/><text x="52" y="274" text-anchor="end" font-family="Kalam" font-size="11" fill="#211f1b">the cycle</text></g><g class="stop" data-t="projects" style="cursor:pointer"><circle cx="32" cy="350" r="7" fill="#fffdf6" stroke="#211f1b" stroke-width="2"/><text x="44" y="354" text-anchor="start" font-family="Kalam" font-size="11" fill="#211f1b">fun stuff</text></g><g class="stop" data-t="work" style="cursor:pointer"><circle cx="58" cy="430" r="7" fill="#fffdf6" stroke="#211f1b" stroke-width="2"/><text x="46" y="434" text-anchor="end" font-family="Kalam" font-size="11" fill="#211f1b">work</text></g>
+  <g id="pin"><path d="M0 -26 C -11 -26 -14 -14 -9 -7 L0 4 L9 -7 C 14 -14 11 -26 0 -26 Z" fill="#d1584a" stroke="#211f1b" stroke-width="1.8"/><circle cx="0" cy="-17" r="4" fill="#fffdf6"/></g>
+  <text id="here" font-family="Caveat" font-weight="700" font-size="15" fill="#b9471a">you are here</text>
+</svg></div>
 
-<div class="page">
+<div class="page" id="top">
 <nav><a href="#papers">papers</a><a href="#research">research</a><a href="#projects">projects</a><a href="#work">work</a><a href="Bhuvan_Arora_CV.pdf">cv</a></nav>
 
 <!-- ================= HERO ================= -->
@@ -1081,6 +1098,26 @@
   (function(){ var subs=["so excited!","…already published 3 times","sad for a day","notice what they all skipped","nobody did *this* part","build, run, write"], t=document.getElementById('cycsub'); if(!t) return;
     document.querySelectorAll('#cycle .cyc').forEach(function(g){ g.addEventListener('click',function(){ t.textContent=subs[+g.dataset.i];
       g.animate([{transform:'scale(1)'},{transform:'scale(1.08)'},{transform:'scale(1)'}],{duration:350}); }); });
+  })();
+
+  (function(){ var road=document.getElementById('road'); if(!road) return; var pin=document.getElementById('pin'), here=document.getElementById('here'), bar=document.getElementById('progress');
+    var L=road.getTotalLength(), stops=[].slice.call(document.querySelectorAll('#trail .stop')), ids=stops.map(function(g){return g.dataset.t;});
+    var stopLen=stops.map(function(g){ var c=g.querySelector('circle'), x=+c.getAttribute('cx'), y=+c.getAttribute('cy'), best=0, bd=1e9; for(var l=0;l<=L;l+=2){ var p=road.getPointAtLength(l), d=(p.x-x)*(p.x-x)+(p.y-y)*(p.y-y); if(d<bd){bd=d;best=l;} } return best; });
+    stops.forEach(function(g){ g.addEventListener('click',function(){ var el=document.getElementById(g.dataset.t); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }); });
+    var cur=0;
+    function update(){ var y=scrollY+innerHeight*.35, maxS=document.documentElement.scrollHeight-innerHeight;
+      bar.style.width=(maxS>0?scrollY/maxS*100:0)+'%';
+      var tops=ids.map(function(id){ var e=document.getElementById(id); return e? e.getBoundingClientRect().top+scrollY : 0; });
+      var k=0; for(var i=0;i<tops.length;i++) if(y>=tops[i]) k=i;
+      var f=0; if(k<tops.length-1){ f=(y-tops[k])/Math.max(1,tops[k+1]-tops[k]); f=Math.max(0,Math.min(1,f)); }
+      if(scrollY>=maxS-4){ k=tops.length-1; f=0; }
+      var target=stopLen[k]+(k<stopLen.length-1?(stopLen[k+1]-stopLen[k])*f:0);
+      cur+= (target-cur)*.25; var p=road.getPointAtLength(cur);
+      pin.setAttribute('transform','translate('+p.x.toFixed(1)+' '+p.y.toFixed(1)+')');
+      var left=p.x>50; here.setAttribute('x',(left? p.x-14 : p.x+14)); here.setAttribute('y',p.y-12); here.setAttribute('text-anchor',left?'end':'start');
+      stops.forEach(function(g,i){ g.classList.toggle('done', i<=k); });
+      if(Math.abs(target-cur)>.5) requestAnimationFrame(update); }
+    addEventListener('scroll',function(){ requestAnimationFrame(update); },{passive:true}); addEventListener('resize',update); update();
   })();
 })();
 </script>
