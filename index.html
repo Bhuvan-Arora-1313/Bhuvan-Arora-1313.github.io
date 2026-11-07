@@ -221,7 +221,7 @@
   /* ================= phone layout: trimmed, single column ================= */
   @media (max-width: 760px) {
     body { font-size: 16px; }
-    .page { padding: 0 14px 50px; }
+    .page { padding: 34px 14px 50px; }
     nav { gap: 14px; font-size: 1.2rem; flex-wrap: wrap; padding-top: 14px; }
     .row { grid-template-columns: minmax(0, 1fr) !important; margin: 26px 0; gap: 14px; }
     .row > .center { grid-column: 1; }
@@ -259,7 +259,15 @@
   #trail .stop.done circle { fill: #d1584a; }
   @media (max-width: 1100px) { #trail { right: 4px; transform: translateY(-50%) scale(.72); transform-origin: right center; } }
   @media (max-width: 760px) { #trail { display: none; } #progress { display: block; } }
-  #progress { display: none; position: fixed; top: 0; left: 0; height: 4px; width: 0; background: linear-gradient(90deg,#b9471a,#e0b040); z-index: 31; }
+  #progress { display: none; position: fixed; top: 0; left: 0; right: 0; height: 34px; z-index: 31; background: rgba(242,239,230,.94); border-bottom: 1.5px solid rgba(33,31,27,.2); box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  #progress .road { position: absolute; left: 10px; right: 34px; bottom: 7px; height: 6px; border-radius: 4px; background: #d9c39d; }
+  #progress .road::after { content: ""; position: absolute; left: 4px; right: 4px; top: 2px; height: 2px; background: repeating-linear-gradient(90deg, #fffdf6 0 8px, transparent 8px 16px); }
+  #progress .done { position: absolute; left: 10px; bottom: 7px; height: 6px; width: 0; border-radius: 4px; background: linear-gradient(90deg,#b9471a,#e0b040); }
+  #progress .rider { position: absolute; bottom: 9px; left: 10px; font-size: 20px; line-height: 1; transform: translateX(-50%) scaleX(-1); transition: left .15s linear; }
+  #progress .flag { position: absolute; right: 8px; bottom: 6px; font-size: 18px; line-height: 1; }
+  #progress .lbl { position: absolute; right: 36px; top: 1px; font-family: Kalam, cursive; font-size: 12px; color: #5b564d; }
+  #progress .lbl b { color: #b9471a; }
+  @media (max-width: 760px) { #progress { display: block; } }
   footer { text-align: center; position: relative; z-index: 2; font-family: "Kalam"; font-size: 1.3rem; color: var(--muted); margin-top: 90px; }
 
   @media (max-width: 1100px) {
@@ -285,7 +293,7 @@
   </filter>
 </svg>
 <canvas id="net" aria-hidden="true"></canvas>
-<div id="progress"></div>
+<div id="progress"><div class="lbl">you are here: <b id="plbl">hi!</b></div><div class="road"></div><div class="done" id="pdone"></div><div class="rider" id="prider">🛺</div><div class="flag">🏁</div></div>
 <div id="trail" aria-hidden="true"><svg width="100" height="460" viewBox="0 0 100 460">
   <path d="M34 30 C34 70, 62 70, 62 110 C62 150, 30 150, 30 190 C30 230, 64 230, 64 270 C64 310, 32 310, 32 350 C32 390, 58 390, 58 430" fill="none" stroke="#c9a97a" stroke-width="10" stroke-linecap="round" opacity=".55"/>
   <path id="road" d="M34 30 C34 70, 62 70, 62 110 C62 150, 30 150, 30 190 C30 230, 64 230, 64 270 C64 310, 32 310, 32 350 C32 390, 58 390, 58 430" fill="none" stroke="#7a5c33" stroke-width="2" stroke-dasharray="5 6" stroke-linecap="round"/>
@@ -1107,7 +1115,7 @@
     stops.forEach(function(g){ g.addEventListener('click',function(){ var el=document.getElementById(g.dataset.t); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }); });
     var cur=0;
     function update(){ var y=scrollY+innerHeight*.35, maxS=document.documentElement.scrollHeight-innerHeight;
-      bar.style.width=(maxS>0?scrollY/maxS*100:0)+'%';
+      var fr=maxS>0?Math.min(1,scrollY/maxS):0, rw=bar.clientWidth-44; document.getElementById('pdone').style.width=(fr*rw)+'px'; document.getElementById('prider').style.left=(10+fr*rw)+'px';
       var tops=ids.map(function(id){ var e=document.getElementById(id); return e? e.getBoundingClientRect().top+scrollY : 0; });
       var k=0; for(var i=0;i<tops.length;i++) if(y>=tops[i]) k=i;
       var f=0; if(k<tops.length-1){ f=(y-tops[k])/Math.max(1,tops[k+1]-tops[k]); f=Math.max(0,Math.min(1,f)); }
@@ -1116,7 +1124,7 @@
       cur+= (target-cur)*.25; var p=road.getPointAtLength(cur);
       pin.setAttribute('transform','translate('+p.x.toFixed(1)+' '+p.y.toFixed(1)+')');
       var left=p.x>50; here.setAttribute('x',(left? p.x-14 : p.x+14)); here.setAttribute('y',p.y-12); here.setAttribute('text-anchor',left?'end':'start');
-      stops.forEach(function(g,i){ g.classList.toggle('done', i<=k); });
+      stops.forEach(function(g,i){ g.classList.toggle('done', i<=k); }); var pl=document.getElementById('plbl'); if(pl) pl.textContent=stops[k].querySelector('text').textContent;
       if(Math.abs(target-cur)>.5) requestAnimationFrame(update); }
     addEventListener('scroll',function(){ requestAnimationFrame(update); },{passive:true}); addEventListener('resize',update); update();
   })();
