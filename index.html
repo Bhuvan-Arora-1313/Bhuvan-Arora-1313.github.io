@@ -1,383 +1,971 @@
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script>try{if(localStorage.getItem("theme")==="dark")document.documentElement.setAttribute("data-theme","dark");}catch(e){}</script>
 <title>Bhuvan Arora</title>
-<meta name="description" content="Bhuvan Arora: undergraduate researcher at BITS Pilani working on LLM agents, reinforcement-learning environments built from real-world settings, and multilingual and Indic NLP.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Kalam:wght@400;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f6f2ea; --fg: #1f1c18; --muted: #625c53; --faint: #8d867b;
-    --line: rgba(60, 45, 25, 0.12); --card: rgba(255, 253, 248, 0.82);
-    --accent: #b9471a; --accent-soft: rgba(185, 71, 26, 0.09);
-    --shadow: 0 1px 2px rgba(60,40,20,0.05), 0 8px 24px rgba(60,40,20,0.06);
-    --ink: 196, 86, 36;
+    --board: #f2efe6; --ink: #211f1b; --muted: #5b564d; --accent: #b9471a; --blue: #2c5ca3; --green: #3b7a4e;
+    --cream: #fdfaf2; --kraft: #d9c39d; --sticky: #fbe9a0; --note-line: rgba(70,110,170,.28);
   }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #14120f; --fg: #efeae1; --muted: #b0a89b; --faint: #857d71;
-      --line: rgba(255, 244, 228, 0.10); --card: rgba(30, 27, 23, 0.80);
-      --accent: #f0915a; --accent-soft: rgba(240, 145, 90, 0.13);
-      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.28);
-      --ink: 240, 145, 90;
-    }
-  }
-  :root[data-theme="dark"] {
-    --bg: #14120f; --fg: #efeae1; --muted: #b0a89b; --faint: #857d71;
-      --line: rgba(255, 244, 228, 0.10); --card: rgba(30, 27, 23, 0.80);
-      --accent: #f0915a; --accent-soft: rgba(240, 145, 90, 0.13);
-      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.28);
-      --ink: 240, 145, 90;
-  }
-
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
-  body { margin: 0; background: var(--bg); color: var(--fg);
-         font-family: Inter, system-ui, -apple-system, sans-serif; font-size: 16px; line-height: 1.6;
-         -webkit-font-smoothing: antialiased; }
-  #bg { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
-  .wrap { position: relative; z-index: 1; max-width: 1040px; margin: 0 auto; padding: 0 16px 72px; }
-  a { color: var(--accent); text-decoration: none; }
-  a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  body { margin: 0; color: var(--ink); background: var(--board); font-family: "Source Serif 4", Georgia, serif; font-size: 17.5px; line-height: 1.62; overflow-x: hidden; }
+  #net { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  .page { position: relative; z-index: 1; max-width: 1560px; margin: 0 auto; padding: 0 24px 90px; }
+  a { color: var(--accent); }
+  .hand { font-family: "Kalam", cursive; }
 
-  /* Top bar */
-  nav.top { position: sticky; top: 0; z-index: 5; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            background: color-mix(in srgb, var(--bg) 72%, transparent); border-bottom: 1px solid var(--line); }
-  nav.top .in { max-width: 1040px; margin: 0 auto; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-  nav.top .brand { font-weight: 600; color: var(--fg); letter-spacing: -0.01em; }
-  nav.top .menu { display: flex; gap: 18px; font-size: 0.9rem; }
-  nav.top .menu a { color: var(--muted); }
-  nav.top .menu a:hover { color: var(--fg); text-decoration: none; }
-  #theme { border: 1px solid var(--line); background: var(--card); color: var(--fg); border-radius: 999px;
-           width: 34px; height: 34px; cursor: pointer; font-size: 15px; line-height: 1; flex: none; }
-  @media (max-width: 640px) { nav.top .menu { display: none; } }
+  /* ---------- paper ---------- */
+  .paper { position: relative; isolation: isolate; padding: 30px 34px; filter: drop-shadow(0 1px 1px rgba(40,25,5,.18)) drop-shadow(0 12px 16px rgba(40,25,5,.14)); }
+  .paper::before { /* the sheet itself, with rough torn edges */
+    content: ""; position: absolute; inset: 0; z-index: -1; background: var(--sheet, var(--cream));
+    filter: url(#torn);
+  }
+  .paper::after { /* paper grain + slight yellowing at the edges */
+    content: ""; position: absolute; inset: 2px; z-index: -1; pointer-events: none; mix-blend-mode: multiply; opacity: .55;
+    background:
+      radial-gradient(120% 90% at 50% 50%, transparent 62%, rgba(150,110,50,.13) 100%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .38  0 0 0 0 .28  0 0 0 .22 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  .paper.lined { --sheet: #fdfcf7; }
+  .paper.lined .lines { position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background: linear-gradient(90deg, transparent 52px, rgba(205,70,60,.45) 52px, rgba(205,70,60,.45) 54px, transparent 54px),
+                repeating-linear-gradient(transparent 0 27px, var(--note-line) 27px 28px);
+    background-position: 0 14px; filter: url(#torn); }
+  .paper.lined { padding-left: 74px; }
+  .paper.kraft { --sheet: var(--kraft); }
+  .paper.sticky { --sheet: var(--sticky); }
+  .paper.graphp { --sheet: #fbfdff; }
+  .paper.graphp .lines { position: absolute; inset: 0; z-index: -1; pointer-events: none; filter: url(#torn);
+    background-image: linear-gradient(rgba(44,92,163,.16) 1px, transparent 1px), linear-gradient(90deg, rgba(44,92,163,.16) 1px, transparent 1px); background-size: 14px 14px; }
+  .paper.photo { padding: 12px 12px 40px; --sheet: #fffefb; }
+  .paper.photo::before { filter: none; }
 
-  /* Hero */
-  header.hero { position: relative; z-index: 1; max-width: 1040px; margin: 0 auto; padding: 80px 16px 40px; }
-  .hero h1 { font-family: "Source Serif 4", Georgia, serif; font-weight: 600; font-size: clamp(2.4rem, 6vw, 3.4rem);
-             letter-spacing: -0.02em; line-height: 1.1; margin: 0 0 12px; }
-  .hero .role { color: var(--muted); font-size: 1.08rem; margin: 0 0 20px; }
-  .hero .lead { font-size: 1.12rem; max-width: 680px; margin: 0 0 26px; }
-  .btns { display: flex; flex-wrap: wrap; gap: 10px; }
-  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border-radius: 999px; font-size: 0.92rem; font-weight: 500;
-         border: 1px solid var(--line); background: var(--card); color: var(--fg); box-shadow: var(--shadow);
-         transition: transform .15s ease, border-color .15s ease; }
-  .btn:hover { transform: translateY(-1px); border-color: var(--accent); text-decoration: none; }
-  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-  :root[data-theme="dark"] .btn.primary { color: #14120f; }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn.primary { color: #14120f; } }
-  .btn svg { width: 16px; height: 16px; }
+  /* ---------- tape: translucent, so the grid shows through it ---------- */
+  .tape { position: absolute; z-index: 3; width: 118px; height: 32px; top: -15px; left: calc(50% - 59px); transform: rotate(-4deg);
+    background: linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,0) 40%, rgba(0,0,0,.03)),
+                rgba(236, 226, 196, .46);
+    box-shadow: 0 1px 1.5px rgba(60,40,10,.14), inset 0 0 0 .5px rgba(255,255,255,.35);
+    clip-path: polygon(0 8%, 4% 0, 9% 10%, 14% 2%, 19% 9%, 24% 1%, 76% 3%, 81% 10%, 86% 1%, 91% 9%, 96% 0, 100% 9%, 100% 92%, 95% 100%, 90% 90%, 85% 99%, 80% 91%, 75% 100%, 25% 97%, 20% 90%, 15% 100%, 10% 91%, 5% 99%, 0 90%);
+    backdrop-filter: saturate(1.05);
+  }
+  .tape.tl { left: -26px; top: -10px; transform: rotate(-38deg); width: 92px; }
+  .tape.tr { left: auto; right: -26px; top: -8px; transform: rotate(36deg); width: 92px; }
+  .tape.bl { top: auto; bottom: -10px; left: -22px; transform: rotate(32deg); width: 86px; }
+  .tape.blue { background: linear-gradient(180deg, rgba(255,255,255,.3), rgba(255,255,255,0) 40%), rgba(150,190,230,.42); }
+  .tape.pink { background: linear-gradient(180deg, rgba(255,255,255,.3), rgba(255,255,255,0) 40%), rgba(240,170,170,.42); }
 
-  /* Sections */
-  section { padding: 28px 0; }
-  h2 { font-family: "Dancing Script", cursive; font-size: 2rem; font-weight: 600; line-height: 1.1; color: var(--accent); margin: 0 0 14px; }
-  .script { font-family: "Dancing Script", cursive; font-weight: 600; color: var(--accent); }
-  .hero .hi { font-size: 1.9rem; margin: 0 0 2px; line-height: 1.1; }
-  footer .sign { font-size: 1.35rem; color: var(--accent); }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; box-shadow: var(--shadow);
-          backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
-  .tag { display: inline-block; font-size: 0.72rem; font-weight: 600; padding: 3px 9px; border-radius: 999px;
-         background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
-  .tag.plain { background: transparent; border: 1px solid var(--line); color: var(--muted); }
+  /* ---------- layout ---------- */
+  nav { display: flex; justify-content: center; gap: 26px; padding: 20px 0 0; font-family: "Caveat"; font-size: 1.45rem; position: relative; z-index: 2; }
+  nav a { color: var(--ink); text-decoration: none; background: linear-gradient(transparent 62%, rgba(185,71,26,.0) 62%); transition: background .2s; padding: 0 4px; }
+  nav a:hover { background: linear-gradient(transparent 58%, rgba(185,71,26,.25) 58%); }
 
-  /* News */
-  .news { list-style: none; padding: 0; margin: 0; }
-  .news li { display: grid; grid-template-columns: 92px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px dashed var(--line); }
-  .news li:last-child { border-bottom: 0; }
-  .news .d { color: var(--faint); font-size: 0.88rem; font-variant-numeric: tabular-nums; padding-top: 1px; }
+  .row { position: relative; display: grid; grid-template-columns: minmax(300px, 1fr) minmax(0, 700px) minmax(300px, 1fr); gap: 30px; align-items: center; margin: 64px 0; }
+  .row > .center { grid-column: 2; position: relative; z-index: 2; }
+  .side { position: relative; align-self: stretch; min-height: 340px; }
+  .side .clip { position: absolute; }
 
-  /* Publications */
-  .pubs { display: grid; gap: 14px; }
-  .pub .t { font-family: "Source Serif 4", Georgia, serif; font-weight: 600; font-size: 1.12rem; line-height: 1.35; margin: 0 0 6px; }
-  .pub .a { color: var(--muted); font-size: 0.9rem; margin: 0 0 6px; }
-  .pub .a b { color: var(--fg); font-weight: 600; }
-  .pub .v { font-size: 0.9rem; font-style: italic; color: var(--muted); margin: 0 0 12px; }
-  .links { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  .chip { font-size: 0.8rem; font-weight: 500; padding: 4px 11px; border-radius: 999px; border: 1px solid var(--line); color: var(--fg); background: transparent; }
-  .chip:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
+  .section-title { text-align: center; font-family: "Caveat"; font-weight: 700; font-size: 3rem; color: var(--accent); margin: 96px 0 -14px; position: relative; z-index: 2; }
+  .section-title span { display: inline-block; transform: rotate(-2deg); background: linear-gradient(transparent 58%, rgba(185,71,26,.2) 58%); padding: 0 12px; }
 
-  /* Research grid */
-  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-  @media (max-width: 680px) { .grid { grid-template-columns: 1fr; } }
-  .proj { position: relative; overflow: hidden; transition: transform .2s ease, border-color .2s ease; }
-  .proj:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
-  .proj::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .25s ease;
-                  background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 50%), var(--accent-soft), transparent 70%); }
-  .proj:hover::before { opacity: 1; }
-  .proj .head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 6px; }
-  .proj h3 { font-size: 1.04rem; margin: 0; line-height: 1.35; }
-  .proj .meta { color: var(--faint); font-size: 0.84rem; margin: 0 0 10px; }
-  .proj p { margin: 0 0 8px; font-size: 0.95rem; }
-  .proj p:last-child { margin-bottom: 0; }
-  .proj.wide { grid-column: 1 / -1; }
+  /* hero */
+  .hero .paper { padding: 46px 50px 40px 92px; transform: rotate(-0.5deg); }
+  /* handwritten intro, sitting on the notebook lines (28px apart) */
+  .hero .hi { font-family: "Caveat", cursive; }
+  .hero h1 { font-family: "Kalam", cursive; }
+  .hero .role, .hero .lead { font-family: "Kalam", cursive; }
+  .hero .hi { font-size: 2.5rem; color: var(--accent); line-height: 68px; margin: 0; }
+  .hero h1 { font-weight: 700; font-size: clamp(3rem, 6vw, 4.2rem); margin: 0; letter-spacing: .01em; line-height: 102px; color: #1d2a4a; }
+  .hero .role { color: var(--muted); font-size: 1.18rem; line-height: 34px; margin: 0 0 34px; }
+  .hero .lead { font-size: 1.34rem; line-height: 34px; margin: 0; color: #1d2a4a; }
+  .hero .paper.lined .lines { background: linear-gradient(90deg, transparent 52px, rgba(205,70,60,.45) 52px, rgba(205,70,60,.45) 54px, transparent 54px), repeating-linear-gradient(transparent 0 33px, var(--note-line) 33px 34px); background-position: 0 12px; }
+  .hero .lead .ul { background: linear-gradient(transparent 70%, rgba(185,71,26,.28) 70%); }
 
-  /* Experience */
-  .tl { display: grid; gap: 14px; }
-  .row { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: baseline; }
-  .row .when { color: var(--faint); font-size: 0.88rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
-  .exp h3 { margin: 0; font-size: 1.02rem; }
-  .exp .sub { color: var(--muted); font-size: 0.92rem; margin: 2px 0 10px; }
-  .exp ul { margin: 0; padding-left: 18px; font-size: 0.95rem; }
-  .exp li { margin: 4px 0; }
+  .btns { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; font-family: Inter, sans-serif; font-weight: 600; font-size: .92rem; text-decoration: none;
+    color: #fdfaf2; background: var(--ink); padding: 10px 17px; border-radius: 10px 14px 9px 13px / 13px 9px 14px 10px;
+    box-shadow: 2px 3px 0 rgba(185,71,26,.85); transform: rotate(var(--r, -1deg)); transition: transform .15s, box-shadow .15s, background .15s; }
+  .btn:hover { transform: rotate(0) translate(-1px,-2px); box-shadow: 4px 5px 0 rgba(185,71,26,.9); background: #000; }
+  .btn.alt { background: var(--accent); box-shadow: 2px 3px 0 var(--ink); }
+  .btn svg { width: 17px; height: 17px; }
 
-  footer { margin-top: 36px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--faint); font-size: 0.84rem;
-           display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  /* project text */
+  .proj h2 { font-size: 1.45rem; margin: 0 0 4px; line-height: 1.25; }
+  .proj .meta { font-family: Inter, sans-serif; font-size: .82rem; color: var(--muted); margin: 0 0 14px; }
+  .proj p { margin: 0 0 12px; }
+  .proj .note { font-family: "Kalam"; font-size: 1.05rem; color: var(--blue); margin: 4px 0 0; line-height: 1.2; }
+  .stamp { position: absolute; top: -10px; right: 34px; z-index: 4; background: rgba(253,250,242,.7); font-family: Inter, sans-serif; font-weight: 700; font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--accent);
+    border: 2.5px solid var(--accent); padding: 4px 9px; border-radius: 3px; transform: rotate(9deg); opacity: .8; mix-blend-mode: multiply;
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='40'><filter id='n'><feTurbulence baseFrequency='.7' numOctaves='2'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1.6 1.5'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
 
-  .reveal { opacity: 0; transform: translateY(10px); transition: opacity .6s ease, transform .6s ease; }
-  .reveal.in { opacity: 1; transform: none; }
-  @media (prefers-reduced-motion: reduce) {
-    .reveal { opacity: 1; transform: none; transition: none; }
-    .proj, .btn { transition: none; }
-    html { scroll-behavior: auto; }
+  /* publications */
+  .pub { margin: 28px 0; transform: rotate(var(--r, 0deg)); }
+  .pub .t { font-weight: 700; font-size: 1.14rem; line-height: 1.35; }
+  .pub .a { font-family: Inter, sans-serif; font-size: .85rem; color: var(--muted); margin: 6px 0; }
+  .pub .a b { color: var(--ink); }
+  .pub .v { font-style: italic; font-size: .93rem; color: var(--muted); }
+  .pub .links { margin-top: 10px; }
+  .pub .links a { font-family: Inter, sans-serif; font-weight: 600; font-size: .82rem; color: var(--ink); text-decoration: none; border: 1.8px solid var(--ink); padding: 3px 11px; border-radius: 20px; margin-right: 8px; background: rgba(255,255,255,.6); }
+  .pub .links a:hover { background: var(--ink); color: #fff; }
+
+  /* clippings */
+  .clip { width: max-content; max-width: 310px; will-change: transform; cursor: grab; user-select: none; touch-action: none; z-index: 1; }
+  .clip:active { cursor: grabbing; }
+  .clip.lift { z-index: 6; }
+  .clip img { display: block; max-width: 100%; height: auto; }
+  .clip .cap { font-family: "Kalam"; font-size: 1rem; color: var(--ink); line-height: 1.15; margin-top: 6px; text-align: center; }
+  .clip .paper { padding: 16px 18px 14px; }
+  .clip svg { display: block; max-width: 100%; height: auto; }
+  .deva { font-family: "Noto Sans Devanagari", sans-serif; }
+
+
+  /* ---------- doodles ---------- */
+  .doodle { position: absolute; pointer-events: none; z-index: 2; }
+  .doodle svg { display: block; overflow: visible; }
+  .doodle .ink { fill: none; stroke: #211f1b; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes floaty { 0%,100% { transform: translateX(0); } 50% { transform: translateX(26px); } }
+  @keyframes twinkle { 0%,100% { opacity: .25; transform: scale(.8); } 50% { opacity: 1; transform: scale(1.1); } }
+  @keyframes bob { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-8px) rotate(3deg); } }
+  @keyframes fly { 0% { offset-distance: 0%; opacity: 0; } 8% { opacity: 1; } 92% { opacity: 1; } 100% { offset-distance: 100%; opacity: 0; } }
+  .rays { transform-origin: 50% 50%; transform-box: fill-box; animation: spin 40s linear infinite; }
+  .cloud { animation: floaty 14s ease-in-out infinite; }
+  .cloud.slow { animation-duration: 20s; animation-delay: -6s; }
+  .star { transform-box: fill-box; transform-origin: center; animation: twinkle 3.2s ease-in-out infinite; }
+  .bob { animation: bob 6s ease-in-out infinite; }
+  .plane-track { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .plane { position: absolute; offset-path: path("M -40 60 C 220 -30, 420 140, 700 40 S 1150 -20, 1500 70"); offset-rotate: auto; animation: fly 16s linear infinite; }
+  @media (max-width: 1100px) { .doodle.wide { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .rays, .cloud, .star, .bob, .plane { animation: none; } }
+
+  .emoji { position: absolute; z-index: 3; font-size: 30px; line-height: 1; pointer-events: none;
+    background: #fff; border-radius: 50%; width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 3px #fff, 0 3px 7px rgba(0,0,0,.2); transform: rotate(var(--r,-8deg)); }
+  .popper { position: absolute; z-index: 3; left: -78px; bottom: -34px; cursor: pointer; transform: rotate(-10deg); transition: transform .2s; }
+  .popper:hover { transform: rotate(-4deg) scale(1.08); }
+  .confetti { position: fixed; z-index: 50; pointer-events: none; width: 9px; height: 14px; border-radius: 2px; }
+  @media (max-width: 1100px) { .popper { display: none; } }
+
+  .doodle.tap { pointer-events: auto; cursor: pointer; }
+  .doodle.tap:hover { filter: drop-shadow(0 0 6px rgba(251,213,96,.9)); }
+  .doodle.lit .bulbglass { fill: #ffe45c; filter: drop-shadow(0 0 10px #ffd84a) drop-shadow(0 0 22px #ffd84a); }
+  .doodle.fast .rays { animation-duration: 1.2s; }
+  .fxbit { position: fixed; z-index: 60; pointer-events: none; }
+  .bubble { position: fixed; z-index: 61; pointer-events: none; font-family: Kalam, cursive; font-size: 15px; background: #fff; border: 2px solid #211f1b; border-radius: 14px; padding: 4px 10px; box-shadow: 2px 3px 0 rgba(0,0,0,.15); transition: opacity .4s, transform .4s; white-space: nowrap; }
+  .track { position: absolute; left: 0; right: 0; height: 80px; pointer-events: none; z-index: 2; overflow: hidden; }
+  .track .rail { position: absolute; left: 0; right: 0; bottom: 8px; height: 10px; background: repeating-linear-gradient(90deg, #8a6a46 0 6px, transparent 6px 22px); border-top: 2px solid #5b564d; border-bottom: 2px solid #5b564d; opacity: .55; }
+  .track .road { position: absolute; left: 0; right: 0; bottom: 6px; height: 2px; background: repeating-linear-gradient(90deg, #5b564d 0 18px, transparent 18px 34px); opacity: .5; }
+  @keyframes drive { from { transform: translateX(-260px); } to { transform: translateX(calc(100vw + 40px)); } }
+  @keyframes driveback { from { transform: translateX(calc(100vw + 40px)); } to { transform: translateX(-260px); } }
+  .vehicle { position: absolute; bottom: 12px; left: 0; pointer-events: auto; cursor: pointer; }
+  .vehicle.train { animation: drive 26s linear infinite; }
+  .vehicle.truckv { animation: driveback 22s linear infinite; animation-delay: -8s; }
+  .birds { position: absolute; left: 0; top: -20px; width: 100%; height: 60px; pointer-events: none; z-index: 2; overflow: hidden; }
+  .bird { position: absolute; animation: drive 30s linear infinite; }
+  @keyframes flapy { 0%,100% { transform: scaleY(1); } 50% { transform: scaleY(-.6); } }
+  .bird path { transform-origin: 50% 60%; transform-box: fill-box; animation: flapy .6s ease-in-out infinite; fill: none; stroke: #211f1b; stroke-width: 2; stroke-linecap: round; }
+  @keyframes balloon { 0%,100% { transform: translate(0,0) rotate(-3deg); } 50% { transform: translate(14px,-26px) rotate(3deg); } }
+  .balloon { animation: balloon 9s ease-in-out infinite; }
+  .rocket { pointer-events: auto; cursor: pointer; }
+  .rocket .flame { transform-origin: 50% 0; transform-box: fill-box; animation: flick .15s ease-in-out infinite alternate; }
+  @keyframes flick { from { transform: scaleY(.8); } to { transform: scaleY(1.25); } }
+  .rocket.idle { animation: bob 4s ease-in-out infinite; }
+  .rocket.launch { transition: transform 2.4s cubic-bezier(.55,0,.8,.4), opacity 2.4s; }
+  @media (max-width: 1100px) { .track, .birds, .rocketwrap, .balloon { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .vehicle, .bird, .balloon { animation: none; } }
+
+  .gpuwrap { width: 170px; }
+  .gpuwrap .fan { transform-box: fill-box; transform-origin: center; }
+  .gpuwrap .fan path { transform-box: fill-box; transform-origin: center; animation: spin 1.4s linear infinite; }
+  .gpuwrap.hot .fan path { animation-duration: .15s; }
+  .gpuwrap.hot .gpucard { fill: #8b3b32; } .gpuwrap.hot .led { fill: #ff3b30; }
+  .gpuwrap.hot .flames { opacity: 1; transition: opacity .6s; } .gpuwrap .flames path { transform-box: fill-box; transform-origin: 50% 100%; animation: flick .18s ease-in-out infinite alternate; }
+  .gpuwrap.hot svg { animation: shake .12s linear infinite; }
+  @keyframes shake { 0%{transform:translate(0,0)} 25%{transform:translate(1.5px,-1px)} 50%{transform:translate(-1px,1px)} 75%{transform:translate(1px,1px)} 100%{transform:translate(0,0)} }
+  .gpuwrap .temp, .gpuwrap .tempbulb { transition: all .8s; }
+  .gpuwrap.hot .temp { y: 4px; height: 73px; fill: #e8584a; } .gpuwrap.hot .tempbulb { fill: #e8584a; }
+  .gpuwrap.queued .led { fill: #e0b040; } .gpuwrap.queued .fan path { animation-play-state: paused; }
+  .gpubtn { display: inline-block; margin: 8px 0 0 6px; font-size: 1rem; background: #211f1b; color: #fdfaf2; padding: 2px 12px; border-radius: 8px 10px 7px 11px; box-shadow: 2px 2px 0 #b9471a; }
+  .gpuwrap.hot .gpubtn { background: #b9471a; box-shadow: 2px 2px 0 #211f1b; }
+  .gpuqueue { font-size: .92rem; line-height: 1.2; color: #211f1b; margin-top: 6px; min-height: 1em; }
+  @media (max-width: 1100px) { .gpuwrap { display: none; } }
+
+  .stain { position: absolute; pointer-events: none; z-index: 1; mix-blend-mode: multiply; }
+  .stain.fresh { animation: stainin 1.2s ease-out both; } @keyframes stainin { from { opacity: 0; transform: scale(.6); } to { opacity: 1; } }
+
+  .chat { position: absolute; z-index: 40; pointer-events: none; font-family: Kalam, cursive; font-size: 15px; line-height: 1.3; max-width: 230px; padding: 7px 12px; border: 2px solid #211f1b; border-radius: 16px; box-shadow: 2px 3px 0 rgba(0,0,0,.15); opacity: 0; transform: translateY(8px) scale(.96); transition: opacity .3s, transform .3s; }
+  .chat.show { opacity: 1; transform: none; }
+  .chat.bot { background: #e7f4ea; border-bottom-right-radius: 4px; }
+  .chat.human { background: #fff3d6; border-bottom-left-radius: 4px; }
+  .chat .who { display: block; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #5b564d; font-family: Inter, sans-serif; font-weight: 700; }
+  #saathi { cursor: pointer; }
+
+  .burn { position: absolute; width: 520px; height: 520px; margin: -260px 0 0 -260px; border-radius: 50%; pointer-events: none; z-index: 0;
+    background: radial-gradient(circle, rgba(30,18,10,.92) 0 38%, rgba(70,38,16,.85) 46%, rgba(140,80,30,.55) 54%, rgba(255,140,40,.9) 58%, rgba(255,200,80,.7) 61%, rgba(255,160,60,0) 68%);
+    filter: url(#burnEdge); transform: scale(0); opacity: 1; transition: transform 6s cubic-bezier(.3,.1,.4,1), opacity 3s ease; mix-blend-mode: multiply; }
+  .burn.grow { transform: scale(1.6); }
+  .burn.fade { opacity: 0; }
+  .ember { position: absolute; width: 5px; height: 5px; border-radius: 50%; background: #ffb347; box-shadow: 0 0 6px #ff7b00; pointer-events: none; z-index: 3; }
+
+  .bitslogo, .bitsbadge { cursor: pointer; }
+  .magic { position: absolute; z-index: 62; pointer-events: none; font-family: "Caveat", cursive; font-weight: 700; font-size: 38px; color: #2b2f86;
+    text-shadow: 0 0 10px rgba(224,176,64,.9), 0 0 2px #fff; white-space: nowrap; animation: rise 2.6s ease-out forwards; }
+  @keyframes rise { 0% { opacity: 0; transform: translate(-50%, 10px) scale(.7) rotate(-4deg); } 15% { opacity: 1; transform: translate(-50%, -10px) scale(1.05) rotate(-2deg); }
+    100% { opacity: 0; transform: translate(-50%, -140px) scale(1) rotate(2deg); } }
+  .spark { position: absolute; z-index: 61; pointer-events: none; color: #e0b040; font-size: 16px; }
+  footer { text-align: center; position: relative; z-index: 2; font-family: "Kalam"; font-size: 1.3rem; color: var(--muted); margin-top: 90px; }
+
+  @media (max-width: 1100px) {
+    .row { grid-template-columns: 1fr; margin: 44px 0; gap: 22px; }
+    .row > .center { grid-column: 1; order: 1; }
+    .side { order: 2; min-height: 0; display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 26px; }
+    .side.left { order: 3; }
+    .side .clip { position: relative !important; left: auto !important; right: auto !important; top: auto !important; max-width: 100%; }
+    .hero .paper { padding: 34px 26px 30px 70px; }
   }
 </style>
 </head>
 <body>
-<canvas id="bg" aria-hidden="true"></canvas>
+<!-- rough paper edge filter -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="burnEdge" x="-20%" y="-20%" width="140%" height="140%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.022" numOctaves="3" seed="3" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="70" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+  <filter id="torn" x="-3%" y="-3%" width="106%" height="106%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.035 0.06" numOctaves="4" seed="7" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+<canvas id="net" aria-hidden="true"></canvas>
 
-<nav class="top">
-  <div class="in">
-    <a class="brand" href="#">Bhuvan Arora</a>
-    <div class="menu">
-      <a href="#publications">Publications</a>
-      <a href="#research">Research</a>
-      <a href="#experience">Experience</a>
-      <a href="Bhuvan_Arora_CV.pdf">CV</a>
+<div class="page">
+<nav><a href="#papers">papers</a><a href="#research">research</a><a href="#work">work</a><a href="Bhuvan_Arora_CV.pdf">cv</a></nav>
+
+<!-- ================= HERO ================= -->
+<div class="row hero">
+  <div class="doodle tap" data-fx="spin" title="click the sun" style="left:3%;top:-60px"><svg width="110" height="110" viewBox="0 0 110 110">
+    <g class="rays"><g class="ink" stroke="#d9952b"><path d="M55 4v14M55 92v14M4 55h14M92 55h14M18 18l10 10M82 82l10 10M18 92l10-10M82 28l10-10"/></g></g>
+    <circle cx="55" cy="55" r="22" fill="#fbd560" stroke="#211f1b" stroke-width="2.2"/>
+    <path class="ink" d="M46 52q2-3 4 0M60 52q2-3 4 0M47 62q8 7 16 0"/></svg></div><div class="doodle cloud wide" style="right:18%;top:-50px"><svg width="150" height="70" viewBox="0 0 150 70">
+    <path d="M22 58 C 4 58 4 34 24 36 C 24 14 54 10 62 28 C 70 10 104 12 104 34 C 128 30 140 58 116 58 Z" fill="#fff" stroke="#211f1b" stroke-width="2.2" stroke-linejoin="round"/>
+    <path class="ink" d="M40 48 q6 4 12 0" stroke="#9db8d9"/></svg></div>
+  <div class="side left">
+    <figure class="clip" style="left:10%;top:8%" data-rot="-7">
+      <div class="paper sticky"><div class="tape pink"></div>
+        <div class="hand" style="font-size:1.52rem;line-height:1.05;width:190px">can AI be <span style="color:var(--accent)">trusted</span><br>with real work?</div>
+      </div>
+    </figure>
+    <figure class="clip" style="left:30%;top:60%" data-rot="6">
+      <div class="paper sticky" style="--sheet:#fff3b8"><div class="tape blue"></div>
+        <div class="hand" style="font-size:1.28rem;line-height:1.05;width:150px;text-align:center">CGPA<br><span style="font-size:3rem;color:var(--accent);font-weight:700">9.57</span><span style="font-size:1.4rem"> / 10</span></div>
+      </div>
+    </figure>
+  </div>
+  <div class="center">
+    <div class="paper lined"><span class="lines"></span><div class="tape"></div>
+      <div class="popper" id="popper" title="click me!"><svg width="90" height="90" viewBox="0 0 90 90">
+      <path d="M10 82 L30 30 L60 60 Z" fill="#f2a33a" stroke="#211f1b" stroke-width="2.2" stroke-linejoin="round"/>
+      <path d="M17 64 L41 41 M23 76 L51 51" stroke="#d1584a" stroke-width="4"/>
+      <g stroke-width="3" stroke-linecap="round" fill="none"><path d="M48 26 q6 -12 16 -8" stroke="#3b7a4e"/><path d="M62 40 q12 -2 14 8" stroke="#2c5ca3"/></g>
+      <circle cx="40" cy="14" r="3.5" fill="#d1584a"/><circle cx="76" cy="26" r="3.5" fill="#fbd560"/><rect x="70" y="58" width="6" height="6" fill="#b9471a" transform="rotate(20 73 61)"/><circle cx="58" cy="8" r="2.5" fill="#2c5ca3"/></svg>
+      <div class="hand" style="font-size:.95rem;text-align:center;margin-top:-6px">click me!</div></div>
+      <p class="hi">Hi, I'm</p>
+      <h1>Bhuvan Arora</h1>
+      <p class="role">Final-year B.E. Computer Science · <img src="img/bits_logo.png" class="bitslogo" title="click me" alt="" style="width:26px;height:26px;vertical-align:-7px;margin:0 2px"> BITS Pilani, Rajasthan, India</p>
+      <p class="lead">I'm interested in a simple question: <span class="ul">can AI systems be trusted with real work?</span> I study this by building benchmarks and training environments for LLM agents, measuring how models behave across languages and cultures, and designing AI for people who are usually left out.</p>
+      <div class="btns">
+        <a class="btn alt" href="mailto:f20230246@pilani.bits-pilani.ac.in" style="--r:-1.5deg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Email</a>
+        <a class="btn" href="Bhuvan_Arora_CV.pdf" style="--r:1deg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg>CV</a>
+        <a class="btn" href="https://scholar.google.com/citations?user=3Oaq54sAAAAJ&amp;hl=en" style="--r:-0.8deg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 9 12 4 2 9l10 5 10-5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/></svg>Scholar</a>
+        <a class="btn" href="https://github.com/Bhuvan-Arora-1313" style="--r:1.4deg"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.58.23 2.75.11 3.04.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>GitHub</a>
+        <a class="btn" href="https://www.linkedin.com/in/bhuvan-arora-7a9523283/" style="--r:-1.2deg"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>LinkedIn</a>
+      </div>
     </div>
-    <button id="theme" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
   </div>
-</nav>
-
-<header class="hero reveal">
-  <p class="hi script">Hi, I'm</p>
-  <h1>Bhuvan Arora</h1>
-  <p class="role">Final-year B.E. Computer Science · BITS Pilani, Rajasthan, India</p>
-  <p class="lead">I'm interested in a simple question: can AI systems be trusted with real work? I study this by building benchmarks and training environments for LLM agents, measuring how models behave across languages and cultures, and designing AI for people who are usually left out.</p>
-  <div class="btns">
-    <a class="btn primary" href="mailto:f20230246@pilani.bits-pilani.ac.in">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>Email</a>
-    <a class="btn" href="Bhuvan_Arora_CV.pdf">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M9 13h6M9 17h6"/></svg>CV</a>
-    <a class="btn" href="https://scholar.google.com/citations?user=3Oaq54sAAAAJ&amp;hl=en">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 9 12 4 2 9l10 5 10-5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/></svg>Google Scholar</a>
-    <a class="btn" href="https://github.com/Bhuvan-Arora-1313">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.58.23 2.75.11 3.04.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>GitHub</a>
-    <a class="btn" href="https://www.linkedin.com/in/bhuvan-arora-7a9523283/">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>LinkedIn</a>
+  <div class="side right">
+    <figure class="clip" style="right:8%;top:6%" data-rot="6">
+      <div class="paper graphp"><span class="lines"></span><div class="tape blue"></div>
+        <svg width="230" height="150" viewBox="0 0 230 150">
+          <g font-family="Kalam" font-size="15.2" fill="#2c5ca3"><text x="6" y="22">what I work on</text></g>
+          <g stroke="#211f1b" stroke-width="1.8" fill="#fffdf6"><ellipse cx="60" cy="78" rx="46" ry="22"/><ellipse cx="172" cy="66" rx="50" ry="22"/><ellipse cx="118" cy="126" rx="48" ry="19"/></g>
+          <g stroke="#b9471a" stroke-width="1.6" stroke-dasharray="5 4" fill="none"><path d="M104 74 L122 70"/><path d="M78 98 L98 112"/><path d="M160 88 L140 110"/></g>
+          <g font-family="Kalam" font-size="14.4" fill="#211f1b" text-anchor="middle"><text x="60" y="84">AI agents</text><text x="172" y="72">languages</text><text x="118" y="132">real people</text></g>
+        </svg>
+      </div>
+    </figure>
+    <figure class="clip bitsbadge" style="right:26%;top:58%" data-rot="-5">
+      <div class="paper" style="--sheet:#fdfaf2;padding:12px"><div class="tape tl pink"></div>
+        <img src="img/bits_logo.png" class="bitslogo" title="click me" alt="BITS Pilani logo" style="width:150px;margin:0 auto">
+        <div class="cap" style="font-size:1.04rem">B.E. Computer Science<br><span style="color:var(--muted);font-size:1.1rem">BITS Pilani · class of 2027</span></div>
+      </div>
+    </figure>
   </div>
-</header>
+</div>
 
-<div class="wrap">
-
-<section class="reveal">
-  <h2>Research interests</h2>
-  <div class="card">Evaluating and training LLM agents on long-horizon tasks · reinforcement-learning environments built from real-world settings · multilingual and Indic NLP · cultural bias in large language models</div>
-</section>
-
-<section class="reveal">
-  <h2>News</h2>
-  <div class="card">
-    <ul class="news">
-      <li><span class="d">Oct 2026</span><span><b>KiranaBench</b> is on <a href="https://arxiv.org/abs/2610.22980">arXiv</a> and under review at ACL Rolling Review.</span></li>
-      <li><span class="d">Sep 2026</span><span><b>DiSCo</b>, on cultural preference bias in LLMs, is on <a href="https://arxiv.org/abs/2609.10253">arXiv</a>.</span></li>
-      <li><span class="d">Jul 2026</span><span>Finished my summer internship at Samsung R&amp;D Institute India, Bengaluru.</span></li>
-      <li><span class="d">Jul 2026</span><span>Our survey on LLM-driven security for 6G networks appeared in the <i>IEEE Open Journal of the Communications Society</i>.</span></li>
-    </ul>
+<!-- ================= PAPERS (first, as on the live site) ================= -->
+<div style="position:relative"><div class="doodle wide" style="left:0;top:-70px;width:100%;height:160px">
+  <svg class="plane-track" viewBox="0 0 1500 160" preserveAspectRatio="none"><path d="M -40 60 C 220 -30, 420 140, 700 40 S 1150 -20, 1500 70" fill="none" stroke="#211f1b" stroke-width="1.6" stroke-dasharray="3 9" opacity=".35"/></svg>
+  <div class="plane"><svg width="46" height="30" viewBox="0 0 46 30"><path d="M2 14 L44 2 L30 28 L22 18 Z" fill="#fff" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/><path class="ink" d="M44 2 L22 18 L20 27" stroke-width="1.8"/></svg></div></div></div>
+<h2 class="section-title" id="papers"><span>papers</span></h2>
+<div class="row">
+  <div class="doodle bob wide tap" data-fx="type" title="type something" style="left:24%;top:auto;bottom:-78px"><svg width="120" height="84" viewBox="0 0 120 84">
+  <rect x="18" y="6" width="84" height="54" rx="5" fill="#2b2f3a" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><rect x="24" y="12" width="72" height="42" rx="2" fill="#0f1722"/>
+  <g class="term" font-family="monospace" font-size="7" fill="#7fe0a0"><text x="28" y="22">&gt; python train.py</text><text x="28" y="32">reward: 15421</text><text x="28" y="42" fill="#fbd560">agent ok ✓</text></g>
+  <path d="M6 62 h108 l-8 12 h-92 z" fill="#c9ccd3" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><path d="M50 66 h20" stroke="#211f1b" stroke-width="2"/></svg></div><div class="doodle wide" style="right:24%;top:auto;bottom:-70px"><svg width="80" height="70" viewBox="0 0 80 70">
+  <rect x="8" y="10" width="54" height="40" rx="4" fill="#fffdf6" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><path d="M14 18 h20 M14 26 h34 M14 34 h28 M14 42 h16" stroke="#9db8d9" stroke-width="2"/>
+  <path d="M58 6 l10 4 -22 30 -8 4 2 -8 z" fill="#2c5ca3" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><text x="4" y="66" font-family="Kalam" font-size="12" fill="#5b564d">paper notes</text></svg></div>
+  <div class="doodle wide" style="right:3%;top:-40px"><svg width="90" height="60" viewBox="0 0 90 60">
+    <path class="star" d="M14 8 l3 7 7 1 -5 5 1 7 -6 -3 -6 3 1 -7 -5 -5 7 -1z" fill="#fbd560" stroke="#211f1b" stroke-width="1.6"/>
+    <path class="star" style="animation-delay:-1.1s" d="M62 26 l2 5 5 .5 -4 3.5 1 5 -4 -2.5 -4 2.5 1 -5 -4 -3.5 5 -.5z" fill="#fbd560" stroke="#211f1b" stroke-width="1.5"/>
+    <path class="star" style="animation-delay:-2.2s" d="M36 46 l1.5 3.5 3.5 .4 -2.7 2.4 .7 3.6 -3 -1.8 -3 1.8 .7 -3.6 -2.7 -2.4 3.5 -.4z" fill="#fbd560" stroke="#211f1b" stroke-width="1.3"/></svg></div>
+  <div class="side left">
+    <figure class="clip" style="left:0;top:0" data-rot="-4">
+      <div class="paper photo"><div class="tape"></div>
+        <img src="img/kb_profit.png" alt="KiranaBench profit by simulated day" style="width:290px">
+        <div class="cap">KiranaBench, Fig. 2: profit by day. The scripted shopkeeper ends at ₹1,03,434; the best model average is ₹13,683.</div>
+      </div>
+    </figure>
+    <figure class="clip" style="left:6%;top:36%" data-rot="5">
+      <div class="paper photo"><div class="tape"></div>
+        <img src="img/disco_radar.png" alt="DiSCo model comparison radar chart" style="width:270px">
+        <div class="cap">DiSCo: six LLMs compared on every metric</div>
+      </div>
+    </figure>
+    
+    
   </div>
-</section>
-
-<section id="publications" class="reveal">
-  <h2>Publications and preprints</h2>
-  <div class="pubs">
-    <article class="card pub">
-      <p class="t">KiranaBench: Can a Language Model Run a Neighbourhood Shop?</p>
-      <p class="a"><b>Bhuvan Arora</b>, Ankita Karmakar, Chaitanya Jain, Dilesh Churiwal, Harshit Jain, Shivansh Manish Dubey, Manish Prasad, Raja Piyush, Kshitij Tayal, Dhruv Kumar, Jagat Sesh Challa, Raunak Manekar, Yash Sinha</p>
-      <p class="v">Under review at ACL Rolling Review (October 2026 cycle), committing to NAACL 2027</p>
-      <div class="links"><a class="chip" href="https://arxiv.org/abs/2610.22980">arXiv</a><span class="tag">First author</span></div>
-    </article>
-    <article class="card pub">
-      <p class="t">DiSCo: A Distribution-First Steering and Cultural Prior Evaluation Framework for Measuring Cultural Preference Bias in LLMs</p>
-      <p class="a"><b>Bhuvan Arora</b>, Devesh Saraogi, Sravya Varada, Dhruv Kumar</p>
-      <p class="v">Preprint, 2026</p>
-      <div class="links"><a class="chip" href="https://arxiv.org/abs/2609.10253">arXiv</a><span class="tag">First author</span></div>
-    </article>
-    <article class="card pub">
-      <p class="t">LLM-Driven Security and Resilience in 6G Mission-Critical Communication Networks</p>
-      <p class="a">Siva Sai, <b>Bhuvan Arora</b>, Vineet Suri, Vinay Chamola, Mohan Gurusamy</p>
-      <p class="v">IEEE Open Journal of the Communications Society, vol. 7, pp. 8963–8984, 2026 (survey)</p>
-      <div class="links"><a class="chip" href="https://doi.org/10.1109/OJCOMS.2026.3717648">DOI</a><span class="tag plain">Journal</span></div>
-    </article>
+  <div class="center">
+    <div class="paper pub" style="--r:-0.5deg"><div class="tape"></div>
+      <div class="t">KiranaBench: Can a Language Model Run a Neighbourhood Shop?</div>
+      <div class="a"><b>Bhuvan Arora</b>, Ankita Karmakar, Chaitanya Jain, Dilesh Churiwal, Harshit Jain, Shivansh Manish Dubey, Manish Prasad, Raja Piyush, Kshitij Tayal, Dhruv Kumar, Jagat Sesh Challa, Raunak Manekar, Yash Sinha</div>
+      <div class="v">Under review at ACL Rolling Review (October 2026 cycle), committing to NAACL 2027</div>
+      <div class="links"><a href="https://arxiv.org/abs/2610.22980">arXiv</a></div>
+    </div>
+    <div class="paper pub" style="--r:0.6deg;--sheet:#fffdf6"><div class="tape tl blue"></div>
+      <div class="t">DiSCo: A Distribution-First Steering and Cultural Prior Evaluation Framework for Measuring Cultural Preference Bias in LLMs</div>
+      <div class="a"><b>Bhuvan Arora</b>, Devesh Saraogi, Sravya Varada, Dhruv Kumar</div>
+      <div class="v">Preprint, 2026</div>
+      <div class="links"><a href="https://arxiv.org/abs/2609.10253">arXiv</a></div>
+    </div>
+    <div class="paper pub" style="--r:-0.4deg"><div class="tape tr"></div>
+      <div class="t">LLM-Driven Security and Resilience in 6G Mission-Critical Communication Networks</div>
+      <div class="a">Siva Sai, <b>Bhuvan Arora</b>, Vineet Suri, Vinay Chamola, Mohan Gurusamy</div>
+      <div class="v">IEEE Open Journal of the Communications Society, vol. 7, pp. 8963–8984, 2026 (survey)</div>
+      <div class="links"><a href="https://doi.org/10.1109/OJCOMS.2026.3717648">DOI</a></div>
+    </div>
   </div>
-</section>
+  <div class="side right">
+    <figure class="clip" style="right:4%;top:2%" data-rot="5">
+      <div class="paper"><div class="tape tl"></div>
+        <svg width="230" height="128" viewBox="0 0 230 128">
+          <text x="4" y="20" font-family="Kalam" font-size="14.4" fill="#211f1b">KiranaBench: e-mails refused by language</text>
+          <g font-family="Kalam" font-size="13.6" fill="#211f1b"><text x="4" y="52">English</text><text x="4" y="84">Hindi</text><text x="4" y="116">Hinglish</text></g>
+          <rect x="74" y="38" width="28" height="18" fill="#3b7a4e" opacity=".85"/>
+          <rect x="74" y="70" width="80" height="18" fill="#b9471a" opacity=".85"/>
+          <rect x="74" y="102" width="88" height="18" fill="#b9471a" opacity=".85"/>
+          <g font-family="Kalam" font-size="14.4" fill="#211f1b"><text x="108" y="53">19%</text><text x="160" y="85">54%</text><text x="168" y="117">59%</text></g>
+        </svg>
+      </div>
+    </figure>
+    <figure class="clip" style="right:6%;top:70%" data-rot="-6">
+      <div class="paper kraft"><div class="tape bl"></div>
+        <svg width="220" height="140" viewBox="0 0 220 140">
+          <text x="6" y="20" font-family="Kalam" font-size="14.4" fill="#211f1b">6G mission-critical network</text>
+          <g stroke="#2c5ca3" stroke-width="1.6"><line x1="40" y1="50" x2="110" y2="84"/><line x1="180" y1="46" x2="110" y2="84"/><line x1="110" y1="84" x2="56" y2="124"/><line x1="110" y1="84" x2="170" y2="120"/><line x1="40" y1="50" x2="180" y2="46"/></g>
+          <g fill="#fffdf6" stroke="#211f1b" stroke-width="1.6"><circle cx="40" cy="50" r="10"/><circle cx="180" cy="46" r="10"/><circle cx="56" cy="124" r="10"/><circle cx="170" cy="120" r="10"/><circle cx="110" cy="84" r="17"/></g>
+          <text x="110" y="89" text-anchor="middle" font-family="Kalam" font-size="12.0" fill="#b9471a">LLM</text>
+          <path d="M196 96 l10 -6 l0 12 z" fill="#b9471a"/><text x="186" y="88" font-family="Kalam" font-size="11.2" fill="#b9471a">attack</text>
+        </svg>
+      </div>
+    </figure>
+    
+    
+  </div>
+</div>
 
-<section id="research" class="reveal">
-  <h2>Research</h2>
-  <div class="grid">
-    <article class="card proj wide">
-      <div class="head"><h3>Karobaar: Indian business simulations as RL environments for LLM agents</h3><span class="tag">Lead</span></div>
+<!-- ================= RESEARCH ================= -->
+<div style="position:relative;height:0;z-index:3"><div class="doodle tap gpuwrap" id="gpu" style="right:3%;top:-30px" title="start a training run">
+  <svg width="150" height="150" viewBox="0 0 150 150" style="overflow:visible">
+    <g class="flames" opacity="0">
+      <path d="M20 10 C 14 -10 30 -16 28 -34 C 40 -20 46 -6 36 10 Z" fill="#f2a33a" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/><path d="M60 10 C 50 -18 74 -26 70 -48 C 88 -28 92 -6 80 10 Z" fill="#e8584a" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M100 10 C 96 -12 110 -18 108 -36 C 122 -22 126 -6 116 10 Z" fill="#f2a33a" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/><path d="M66 10 C 62 -6 74 -10 72 -22 C 82 -12 84 -2 78 10 Z" fill="#fbd560"/></g>
+    <rect x="6" y="6" width="128" height="100" rx="6" fill="#c9ccd3" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/>
+    <g transform="translate(14,14)"><rect class="gpucard" width="112" height="17" rx="2" fill="#3b4150" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/>
+  <g class="fan" transform="translate(22 8.5)"><circle r="6.5" fill="#20242d" stroke="#888" stroke-width="1"/><path d="M0 -5 L1.6 0 L0 5 L-1.6 0 Z M-5 0 L0 1.6 L5 0 L0 -1.6 Z" fill="#9aa3b5"/></g>
+  <g class="fan" transform="translate(44 8.5)"><circle r="6.5" fill="#20242d" stroke="#888" stroke-width="1"/><path d="M0 -5 L1.6 0 L0 5 L-1.6 0 Z M-5 0 L0 1.6 L5 0 L0 -1.6 Z" fill="#9aa3b5"/></g>
+  <text x="58" y="12" font-family="monospace" font-size="7" fill="#7fe0a0">GPU 0</text><circle class="led" cx="102" cy="8.5" r="3" fill="#3fd06a"/></g><g transform="translate(14,36)"><rect class="gpucard" width="112" height="17" rx="2" fill="#3b4150" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/>
+  <g class="fan" transform="translate(22 8.5)"><circle r="6.5" fill="#20242d" stroke="#888" stroke-width="1"/><path d="M0 -5 L1.6 0 L0 5 L-1.6 0 Z M-5 0 L0 1.6 L5 0 L0 -1.6 Z" fill="#9aa3b5"/></g>
+  <g class="fan" transform="translate(44 8.5)"><circle r="6.5" fill="#20242d" stroke="#888" stroke-width="1"/><path d="M0 -5 L1.6 0 L0 5 L-1.6 0 Z M-5 0 L0 1.6 L5 0 L0 -1.6 Z" fill="#9aa3b5"/></g>
+  <text x="58" y="12" font-family="monospace" font-size="7" fill="#7fe0a0">GPU 1</text><circle class="led" cx="102" cy="8.5" r="3" fill="#3fd06a"/></g><g transform="translate(14,58)"><rect class="gpucard" width="112" height="17" rx="2" fill="#3b4150" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/>
+  <g class="fan" transform="translate(22 8.5)"><circle r="6.5" fill="#20242d" stroke="#888" stroke-width="1"/><path d="M0 -5 L1.6 0 L0 5 L-1.6 0 Z M-5 0 L0 1.6 L5 0 L0 -1.6 Z" fill="#9aa3b5"/></g>
+  <g class="fan" transform="translate(44 8.5)"><circle r="6.5" fill="#20242d" stroke="#888" stroke-width="1"/><path d="M0 -5 L1.6 0 L0 5 L-1.6 0 Z M-5 0 L0 1.6 L5 0 L0 -1.6 Z" fill="#9aa3b5"/></g>
+  <text x="58" y="12" font-family="monospace" font-size="7" fill="#7fe0a0">GPU 2</text><circle class="led" cx="102" cy="8.5" r="3" fill="#3fd06a"/></g><g transform="translate(14,80)"><rect class="gpucard" width="112" height="17" rx="2" fill="#3b4150" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/>
+  <g class="fan" transform="translate(22 8.5)"><circle r="6.5" fill="#20242d" stroke="#888" stroke-width="1"/><path d="M0 -5 L1.6 0 L0 5 L-1.6 0 Z M-5 0 L0 1.6 L5 0 L0 -1.6 Z" fill="#9aa3b5"/></g>
+  <g class="fan" transform="translate(44 8.5)"><circle r="6.5" fill="#20242d" stroke="#888" stroke-width="1"/><path d="M0 -5 L1.6 0 L0 5 L-1.6 0 Z M-5 0 L0 1.6 L5 0 L0 -1.6 Z" fill="#9aa3b5"/></g>
+  <text x="58" y="12" font-family="monospace" font-size="7" fill="#7fe0a0">GPU 3</text><circle class="led" cx="102" cy="8.5" r="3" fill="#3fd06a"/></g>
+    <rect x="6" y="106" width="128" height="10" fill="#9aa0ac" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/>
+    <g transform="translate(140 20)"><rect x="0" y="0" width="12" height="80" rx="6" fill="#fff" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/><rect class="temp" x="3" y="58" width="6" height="19" rx="3" fill="#3b7a4e"/><circle cx="6" cy="84" r="8" class="tempbulb" fill="#3b7a4e" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/></g>
+    <text class="gputemp" x="146" y="112" font-family="Kalam" font-size="12" fill="#211f1b">42°C</text>
+  </svg>
+  <div class="gpubtn hand">▶ start training</div>
+  <div class="gpuqueue hand"></div>
+</div>
+  <div class="hand" style="position:absolute;right:calc(3% + 185px);top:40px;font-size:1rem;color:var(--muted);transform:rotate(-4deg)">← my GPUs, every week</div></div>
+<h2 class="section-title" id="research"><span>research</span></h2>
+
+<!-- Karobaar -->
+<div class="row">
+  
+  
+  
+  <div class="doodle bob wide tap" data-fx="glow" title="idea?" style="left:41%;top:-74px"><svg width="54" height="70" viewBox="0 0 54 70">
+    <path class="bulbglass" d="M27 6 C 10 6 4 24 14 36 C 18 41 19 45 19 50 L35 50 C 35 45 36 41 40 36 C 50 24 44 6 27 6 Z" fill="#fff7c2" stroke="#211f1b" stroke-width="2.2"/>
+    <path class="ink" d="M20 56 h14 M22 62 h10 M27 50 v-14 l-5 -6 M27 36 l5 -6"/><path class="ink" stroke="#d9952b" d="M6 6 l5 5 M48 6 l-5 5 M27 -2 v4"/></svg></div><div class="doodle cloud slow wide" style="left:30%;top:-46px"><svg width="110" height="52" viewBox="0 0 110 52">
+    <path d="M16 44 C 2 44 2 26 18 28 C 18 10 42 8 48 22 C 54 8 80 10 80 28 C 98 24 106 44 88 44 Z" fill="#fff" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/></svg></div>
+  <div class="side left">
+    <figure class="clip" style="left:0;top:2%" data-rot="-3">
+      <div class="paper graphp" style="padding:12px 10px 8px"><span class="lines"></span><div class="tape"></div>
+        <svg width="300" height="300" viewBox="0 0 300 300"><defs><clipPath id="ckirana"><circle cx="150" cy="62" r="30"/></clipPath><clipPath id="ctruck"><circle cx="248" cy="128" r="30"/></clipPath><clipPath id="ccity"><circle cx="214" cy="232" r="30"/></clipPath><clipPath id="cwedding"><circle cx="86" cy="232" r="30"/></clipPath><clipPath id="cstaffing"><circle cx="52" cy="128" r="30"/></clipPath></defs>
+          <path d="M60 268 C 10 268 0 210 34 196 C 2 160 22 104 62 108 C 54 52 120 24 150 54 C 176 18 250 34 244 94 C 292 98 304 170 266 190 C 298 222 268 274 226 266 C 200 298 96 300 60 268 Z" fill="#eef5fd" stroke="#2c5ca3" stroke-width="2.4" stroke-dasharray="7 5"/>
+          <text x="150" y="20" text-anchor="middle" font-family="Kalam" font-weight="700" font-size="17" fill="#2c5ca3" letter-spacing="2">SIMULATED BUSINESSES</text>
+          <line x1="150" y1="150" x2="150" y2="62" stroke="#b9471a" stroke-width="1.6" stroke-dasharray="4 4"/><line x1="150" y1="150" x2="248" y2="128" stroke="#b9471a" stroke-width="1.6" stroke-dasharray="4 4"/><line x1="150" y1="150" x2="214" y2="232" stroke="#b9471a" stroke-width="1.6" stroke-dasharray="4 4"/><line x1="150" y1="150" x2="86" y2="232" stroke="#b9471a" stroke-width="1.6" stroke-dasharray="4 4"/><line x1="150" y1="150" x2="52" y2="128" stroke="#b9471a" stroke-width="1.6" stroke-dasharray="4 4"/><circle cx="150" cy="62" r="32" fill="#fff" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/><image href="img/kirana.svg" x="106" y="28" width="88" height="68" clip-path="url(#ckirana)" preserveAspectRatio="xMidYMid slice"/>
+  <text x="150" y="108" text-anchor="middle" font-family="Kalam" font-size="12" fill="#211f1b">kirana shop</text><circle cx="248" cy="128" r="32" fill="#fff" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/><image href="img/truck.svg" x="204" y="94" width="88" height="68" clip-path="url(#ctruck)" preserveAspectRatio="xMidYMid slice"/>
+  <text x="248" y="174" text-anchor="middle" font-family="Kalam" font-size="12" fill="#211f1b">truck fleet</text><circle cx="214" cy="232" r="32" fill="#fff" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/><image href="img/city.svg" x="170" y="198" width="88" height="68" clip-path="url(#ccity)" preserveAspectRatio="xMidYMid slice"/>
+  <text x="214" y="278" text-anchor="middle" font-family="Kalam" font-size="12" fill="#211f1b">municipal corp.</text><circle cx="86" cy="232" r="32" fill="#fff" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/><image href="img/wedding.svg" x="42" y="198" width="88" height="68" clip-path="url(#cwedding)" preserveAspectRatio="xMidYMid slice"/>
+  <text x="86" y="278" text-anchor="middle" font-family="Kalam" font-size="12" fill="#211f1b">wedding planner</text><circle cx="52" cy="128" r="32" fill="#fff" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/><image href="img/staffing.svg" x="8" y="94" width="88" height="68" clip-path="url(#cstaffing)" preserveAspectRatio="xMidYMid slice"/>
+  <text x="52" y="174" text-anchor="middle" font-family="Kalam" font-size="12" fill="#211f1b">staffing agency</text>
+          <g transform="translate(150 150)"><rect x="-24" y="-18" width="48" height="36" rx="9" fill="#fbd560" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/><circle cx="-9" cy="-3" r="4" fill="#211f1b"/><circle cx="9" cy="-3" r="4" fill="#211f1b"/><path d="M-8 8 q8 5 16 0" fill="none" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/><path d="M0 -18 v-8" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/><circle cx="0" cy="-29" r="3.5" fill="#d1584a" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/></g>
+          <text x="150" y="190" text-anchor="middle" font-family="Kalam" font-weight="700" font-size="13" fill="#211f1b">LLM agent</text>
+        </svg>
+        <div class="cap">we build these as simulations; an LLM agent runs each one</div>
+      </div>
+    </figure>
+    
+    
+  </div>
+  <div class="center">
+    <article class="paper proj" style="transform:rotate(0.4deg)"><div class="tape"></div><span class="stamp">project lead</span>
+      <h2>Karobaar: Indian business simulations as RL environments</h2>
       <p class="meta">2026 – present · Advisor: Dr. Dhruv Kumar, BITS Pilani</p>
-      <p>I lead a team of student researchers building simulated Indian businesses (kirana shop, truck fleet, municipal corporation, wedding planning, staffing agency, scrap dealer, hotel and cloud kitchen). In each one an LLM agent runs the business over a long horizon and is scored against the simulator's ground truth. We are turning these simulations into reinforcement-learning environments for training LLM agents.</p>
-      <p><b>First environment, KiranaBench:</b> one model runs every job in a neighbourhood shop for 30 days, dealing with customers and suppliers in English, Hindi and Hinglish. Four open-weight models fall well short of a simple rule-based shopkeeper and write worse to Hindi and Hinglish suppliers than to English ones.</p>
+      <p>I lead a team of student researchers building simulated Indian businesses: a kirana shop, truck fleet, municipal corporation, wedding planner, staffing agency, scrap dealer, hotel and cloud kitchen. An LLM agent runs each business over a long horizon and is scored against the simulator's ground truth, and we are turning them into RL environments for training agents.</p>
+      <p><b>First environment, KiranaBench</b> (first author, under review): one model runs every job in a neighbourhood shop for 30 days, with customers and suppliers in English, Hindi and Hinglish. The best of four models earns an eighth of what a simple scripted shopkeeper does, and two finish below a shop nobody manages.</p>
+      <p class="note">← the simulated businesses inside Karobaar</p>
     </article>
-    <article class="card proj">
-      <div class="head"><h3>BharatGUI: computer-use agents on Indian government and public-service websites</h3></div>
+  </div>
+  <div class="side right">
+    
+    <figure class="clip" style="right:8%;top:20%" data-rot="-3">
+      <div class="paper sticky"><div class="tape"></div>
+        <div class="hand" style="font-size:1.16rem;line-height:1.15;width:200px">8 businesses<br>1 shared core<br>reward = the simulator's own score<br><span style="color:var(--accent)">no LLM judge</span></div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+<!-- BharatGUI -->
+<div class="row">
+  
+  <div class="doodle wide tap" data-fx="wave" title="say hi to the agent" style="right:23%;left:auto;top:auto;bottom:-96px;transform:rotate(8deg)"><svg width="92" height="92" viewBox="0 0 92 92">
+  <circle cx="46" cy="46" r="40" fill="#fff" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><rect x="26" y="30" width="40" height="30" rx="8" fill="#cfe3f5" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+  <circle cx="38" cy="44" r="4" fill="#211f1b"/><circle cx="54" cy="44" r="4" fill="#211f1b"/><path d="M38 53 q8 5 16 0" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill="none"/>
+  <path d="M46 30 v-8" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><circle cx="46" cy="20" r="3.5" fill="#d1584a" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><path d="M26 44 h-6 M66 44 h6" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+  <text x="46" y="80" text-anchor="middle" font-family="Kalam" font-size="10" fill="#211f1b">agent</text></svg></div>
+  <div class="side left">
+    <figure class="clip" style="left:0;top:4%" data-rot="-5">
+      <div class="paper photo"><div class="tape"></div>
+        <svg width="240" height="157" viewBox="0 0 300 196">
+          <rect x="2" y="2" width="296" height="192" rx="7" fill="#fff" stroke="#211f1b" stroke-width="1.6"/>
+          <rect x="2" y="2" width="296" height="24" rx="7" fill="#ece6d8"/><circle cx="16" cy="14" r="4" fill="#d1584a"/><circle cx="30" cy="14" r="4" fill="#e0b040"/><circle cx="44" cy="14" r="4" fill="#5a9a5e"/>
+          <rect x="62" y="7" width="200" height="14" rx="7" fill="#fff" stroke="#cfc6b3"/><text x="72" y="18" font-family="Inter" font-size="9" fill="#777">localhost:8002/returns/gstr-3b</text>
+          <rect x="2" y="26" width="296" height="22" fill="#1f3c73"/><text x="12" y="41" class="deva" font-size="11" fill="#fff">वस्तु एवं सेवा कर · रिटर्न डैशबोर्ड</text>
+          <text x="16" y="72" class="deva" font-size="13" font-weight="600" fill="#1f3c73">GSTR-3B</text>
+          <text x="16" y="94" class="deva" font-size="11.5" fill="#211f1b">क्या आप शून्य रिटर्न दाखिल करना चाहते हैं?</text>
+          <rect x="16" y="104" width="46" height="18" rx="3" fill="#fff" stroke="#1f3c73"/><text x="29" y="117" class="deva" font-size="10.5" fill="#1f3c73">हाँ</text>
+          <rect x="70" y="104" width="46" height="18" rx="3" fill="#1f3c73"/><text x="83" y="117" class="deva" font-size="10.5" fill="#fff">नहीं</text>
+          <rect x="16" y="134" width="200" height="12" fill="#f3efe6"/><rect x="16" y="152" width="150" height="12" fill="#f3efe6"/>
+          <path d="M228 108 l0 26 l7 -7 l6 12 l5 -2 l-6 -12 l10 0 z" fill="#211f1b" stroke="#fff" stroke-width="1"/>
+          <circle cx="232" cy="112" r="15" fill="none" stroke="#b9471a" stroke-width="1.6" stroke-dasharray="3 3"/>
+        </svg>
+        <div class="cap">GST portal replica, Hindi: "Do you want to file a Nil return?"</div>
+      </div>
+    </figure>
+    
+  </div>
+  <div class="center">
+    <article class="paper lined proj" style="transform:rotate(-0.4deg)"><span class="lines"></span><div class="tape"></div>
+      <h2>BharatGUI: computer-use agents on Indian government websites</h2>
       <p class="meta">2026 – present · Advisor: Dr. Dhruv Kumar</p>
-      <p>Realistic, self-hosted replicas of Indian websites, in English and Hindi, used to test and train screenshot-based computer-use agents, with every task checked against the site's own database. Built so far: a GST tax-filing portal (191 pages, 117 tasks) and an IRCTC-style railway-booking portal (109 tasks), each with an automatic grader and adjustable rendering quality. More Indian portals are on the way.</p>
+      <p>Realistic, self-hosted replicas of Indian websites, in English and Hindi, used to test and train screenshot-based computer-use agents, with every task checked against the site's own database.</p>
+      <p>Built so far: a GST tax-filing portal (191 pages, 117 tasks) and an IRCTC-style railway-booking portal (109 tasks), each with an automatic grader and adjustable rendering quality. More portals are on the way.</p>
     </article>
-    <article class="card proj">
-      <div class="head"><h3>DiSCo: cultural preference bias in LLMs</h3><span class="tag">First author</span></div>
-      <p class="meta">2026 · Advisor: Dr. Dhruv Kumar</p>
-      <p>A distribution-first evaluation framework for how LLMs handle culturally specific norms and values, beyond language differences alone.</p>
+  </div>
+  <div class="side right">
+    <figure class="clip" style="right:6%;top:10%" data-rot="6">
+      <div class="paper" style="--sheet:#fff6e6;padding:14px 16px"><div class="tape tr pink"></div>
+        <svg width="250" height="142" viewBox="0 0 250 142">
+          <text x="4" y="18" font-family="Inter" font-size="10" font-weight="700" fill="#1f3c73" letter-spacing="1">E-TICKET · RESERVATION SLIP</text>
+          <line x1="4" y1="26" x2="246" y2="26" stroke="#211f1b"/>
+          <text x="4" y="48" class="deva" font-size="13" font-weight="600" fill="#211f1b">अंबरपुर समुद्रपुर सुपरफास्ट</text>
+          <g font-family="Inter" font-size="11" fill="#211f1b"><text x="4" y="70">PNR  4217780932</text><text x="150" y="70">3A · CNF</text>
+          <text x="4" y="90">Passengers: 2</text><text x="150" y="90">Quota: GN</text></g>
+          <line x1="4" y1="102" x2="246" y2="102" stroke="#211f1b" stroke-dasharray="5 4"/>
+          <text x="4" y="128" font-family="Kalam" font-size="15.2" fill="#b9471a">109 booking tasks</text>
+          <circle cx="222" cy="122" r="13" fill="none" stroke="#3b7a4e" stroke-width="2.2"/><path d="M215 122 l5 5 l9 -10" stroke="#3b7a4e" stroke-width="2.4" fill="none"/>
+        </svg>
+      </div>
+    </figure>
+    <figure class="clip" style="right:8%;top:66%" data-rot="-5">
+      <div class="paper sticky"><div class="tape"></div>
+        <div class="hand" style="font-size:1.16rem;line-height:1.15;width:190px">GST portal<br><b>191</b> pages · <b>117</b> tasks<br>all reference solutions pass ✓</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+<!-- DiSCo -->
+<div class="row">
+  <div class="doodle wide" style="right:24%;top:auto;bottom:-56px;transform:rotate(-12deg)"><svg width="150" height="30" viewBox="0 0 150 30">
+  <rect x="20" y="6" width="104" height="18" fill="#fbd560" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><path d="M20 6 L4 15 L20 24 Z" fill="#f2d4a8" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><path d="M4 15 L9 12.2 L9 17.8 Z" fill="#211f1b"/>
+  <rect x="124" y="6" width="10" height="18" fill="#c9ccd3" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><rect x="134" y="6" width="12" height="18" rx="3" fill="#e79aa0" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M20 12 h104 M20 18 h104" stroke="#d9952b" stroke-width="1.2"/></svg></div><div class="doodle wide" style="left:26%;top:auto;bottom:-52px;transform:rotate(14deg)"><svg width="70" height="40" viewBox="0 0 70 40">
+  <path d="M10 8 h50 l6 8 v14 l-6 6 h-50 l-6 -6 v-14 z" fill="#f4a5b0" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><path d="M28 8 v28" stroke="#211f1b" stroke-width="1.6"/><rect x="28" y="8" width="32" height="28" fill="#6c9be0" opacity=".9"/>
+  <text x="34" y="26" font-family="Kalam" font-size="10" fill="#fff">GPU</text></svg></div>
+  
+  <div class="side left">
+    <figure class="clip" style="left:0;top:4%" data-rot="-4">
+      <div class="paper photo"><div class="tape"></div>
+        <img src="img/disco_pipeline.jpg" alt="DiSCo pipeline" style="width:290px">
+        <div class="cap">the DiSCo pipeline: 12 cultures, a C0–C3 context gradient, 6 LLMs</div>
+      </div>
+    </figure>
+  </div>
+  <div class="center">
+    <article class="paper proj" style="transform:rotate(0.5deg)"><div class="tape"></div><span class="stamp">first author</span>
+      <h2>DiSCo: cultural preference bias in LLMs</h2>
+      <p class="meta">2026 · Advisor: Dr. Dhruv Kumar · <a href="https://arxiv.org/abs/2609.10253">arXiv:2609.10253</a></p>
+      <p>A distribution-first framework for measuring how LLMs handle culturally specific norms and values, beyond language differences alone. We give models more and more cultural context, from none at all to per-option cultural facts, and measure how far their choices actually move.</p>
     </article>
-    <article class="card proj wide">
-      <div class="head"><h3>A physical AI companion for older adults</h3></div>
+  </div>
+  <div class="side right">
+    <figure class="clip" style="right:0;top:8%" data-rot="5">
+      <div class="paper photo"><div class="tape tr blue"></div>
+        <img src="img/disco_heatmap.png" alt="DiSCo compliance rate heatmap by culture" style="width:280px">
+        <div class="cap">how often each model picks the target culture's answer</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+<!-- Companion -->
+<div class="row">
+  <div class="doodle balloon" style="left:4%;top:auto;bottom:-150px"><svg width="70" height="110" viewBox="0 0 70 110">
+    <path d="M35 4 C 6 4 2 40 22 62 L28 70 H42 L48 62 C 68 40 64 4 35 4 Z" fill="#e8786a" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M35 4 C 24 20 24 50 30 70 M35 4 C 46 20 46 50 40 70" fill="none" stroke="#fbd560" stroke-width="5"/>
+    <path d="M29 70 L30 86 M41 70 L40 86" stroke="#211f1b" stroke-width="1.6"/><rect x="27" y="86" width="16" height="13" rx="2" fill="#b48a55" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/></svg></div>
+  
+  <div class="doodle wide tap" data-fx="sparkle" title="shh, it is sleeping" style="left:4%;top:-56px"><svg width="130" height="90" viewBox="0 0 130 90">
+    <path d="M52 10 C 30 14 22 44 38 62 C 52 78 78 74 88 58 C 66 66 44 50 46 30 C 47 22 49 15 52 10 Z" fill="#f4e7b0" stroke="#211f1b" stroke-width="2.2" stroke-linejoin="round"/>
+    <path class="ink" d="M60 46 q3 3 6 0" stroke-width="1.8"/>
+    <path class="star" d="M104 16 l2 5 5 .5 -4 3.5 1 5 -4 -2.5 -4 2.5 1 -5 -4 -3.5 5 -.5z" fill="#fbd560" stroke="#211f1b" stroke-width="1.4"/>
+    <path class="star" style="animation-delay:-1.6s" d="M14 70 l1.5 3.5 3.5 .4 -2.7 2.4 .7 3.6 -3 -1.8 -3 1.8 .7 -3.6 -2.7 -2.4 3.5 -.4z" fill="#fbd560" stroke="#211f1b" stroke-width="1.3"/>
+    <text x="80" y="86" font-family="Kalam" font-size="13" fill="#5b564d">zzz</text></svg></div>
+  <div class="side left">
+    <figure class="clip" style="left:10%;top:64%" data-rot="-5">
+      <div class="paper" style="--sheet:#eef5fd;padding:12px 14px 8px"><div class="tape tr"></div>
+        <svg width="170" height="96" viewBox="0 0 170 96">
+          <circle cx="30" cy="22" r="11" fill="#f1c9a5" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><path d="M12 70 q4 -30 18 -34 q14 4 18 34 z" fill="#c95b6e" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+          <path d="M44 50 q12 -2 20 4" fill="none" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><path d="M64 54 l6 -2 -1 6 z" fill="#211f1b"/>
+          <path d="M126 50 q-12 -2 -20 4" fill="none" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><path d="M106 54 l-6 -2 1 6 z" fill="#211f1b"/>
+          <rect x="120" y="14" width="40" height="40" rx="8" fill="#fbd560" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><circle cx="133" cy="31" r="3" fill="#211f1b"/><circle cx="147" cy="31" r="3" fill="#211f1b"/><path d="M133 41 q7 4 14 0" fill="none" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+          <text x="85" y="40" text-anchor="middle" font-family="Kalam" font-size="13" fill="#2c5ca3">talk</text>
+          <text x="85" y="88" text-anchor="middle" font-family="Kalam" font-weight="700" font-size="12" fill="#211f1b">human–computer interaction</text>
+        </svg>
+      </div>
+    </figure>
+    
+    <figure class="clip" style="left:22%;top:16%" data-rot="-3">
+      <div class="paper sticky"><div class="tape pink"></div>
+        <div class="hand" style="font-size:1.16rem;line-height:1.15;width:200px">no screen.<br>no app.<br>just press <span style="color:var(--accent)">talk</span>.</div>
+      </div>
+    </figure>
+  </div>
+  <div class="center">
+    <article class="paper proj" style="transform:rotate(-0.4deg);--sheet:#fffdf7"><div class="tape"></div>
+      <h2>A physical AI companion for older adults</h2>
       <p class="meta">Ongoing · Advisor: Dr. Siddharth Mehrotra</p>
-      <p>A voice assistant operated with physical buttons and knobs, designed for older adults with limited digital literacy. The working prototype supports open-ended conversation, web search, and reminders and alarms; an internet-based calling, voice-note and messaging backend that connects users to family through a companion app is in progress.</p>
+      <p>A voice assistant operated with physical buttons and knobs, as simple as an old radio, for older adults with limited digital literacy. The working prototype supports open-ended conversation, web search, and reminders and alarms; calling and voice notes with family are in progress.</p>
     </article>
   </div>
-</section>
-
-<section id="experience" class="reveal">
-  <h2>Experience</h2>
-  <div class="tl">
-    <article class="card exp">
-      <div class="row"><h3>Samsung R&amp;D Institute India, Bengaluru</h3><span class="when">May – Jul 2026</span></div>
-      <p class="sub">Advanced Developer Intern (MAGPIE) · received a pre-placement offer</p>
-      <ul>
-        <li><b>AI planner app:</b> conversational daily planner using Google's A2UI (Agent-to-UI) protocol, with location-aware clash detection. Tested whether A2UI, designed for remote agents, can run on-device, with partial success.</li>
-        <li><b>Damaged-barcode recovery:</b> two-stage retrieval pipeline (FFT-based embeddings with approximate nearest-neighbour shortlisting, then cross-correlation reranking) that reached 95.75% accuracy across 9 barcode types.</li>
-      </ul>
-    </article>
-    <article class="card exp">
-      <div class="row"><h3>CloudDefense.AI</h3><span class="when">May – Jul 2025</span></div>
-      <p class="sub" style="margin-bottom:0">Practice School I Intern</p>
-    </article>
-    <article class="card exp">
-      <div class="row"><h3>Birla Institute of Technology and Science (BITS) Pilani</h3><span class="when">2023 – May 2027</span></div>
-      <p class="sub" style="margin-bottom:0">B.E. Computer Science · CGPA 9.57/10 · Pilani, Rajasthan, India</p>
-    </article>
+  <div class="side right">
+    <figure class="clip" id="hw" style="right:50%;top:98%" data-rot="6">
+      <div class="paper graphp" style="padding:12px 12px 6px"><span class="lines"></span><div class="tape"></div>
+        <svg width="140" height="96" viewBox="0 0 140 96">
+          <rect x="22" y="14" width="96" height="58" rx="4" fill="#2d6a4f" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+          <rect x="44" y="26" width="40" height="30" rx="2" fill="#c9ccd3" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><text x="64" y="45" text-anchor="middle" font-family="monospace" font-size="9" fill="#211f1b">ESP32</text>
+          <rect x="28" y="8" width="4" height="8" fill="#e0b040"/><rect x="28" y="70" width="4" height="8" fill="#e0b040"/><rect x="38" y="8" width="4" height="8" fill="#e0b040"/><rect x="38" y="70" width="4" height="8" fill="#e0b040"/><rect x="48" y="8" width="4" height="8" fill="#e0b040"/><rect x="48" y="70" width="4" height="8" fill="#e0b040"/><rect x="58" y="8" width="4" height="8" fill="#e0b040"/><rect x="58" y="70" width="4" height="8" fill="#e0b040"/><rect x="68" y="8" width="4" height="8" fill="#e0b040"/><rect x="68" y="70" width="4" height="8" fill="#e0b040"/><rect x="78" y="8" width="4" height="8" fill="#e0b040"/><rect x="78" y="70" width="4" height="8" fill="#e0b040"/><rect x="88" y="8" width="4" height="8" fill="#e0b040"/><rect x="88" y="70" width="4" height="8" fill="#e0b040"/><rect x="98" y="8" width="4" height="8" fill="#e0b040"/><rect x="98" y="70" width="4" height="8" fill="#e0b040"/><rect x="108" y="8" width="4" height="8" fill="#e0b040"/><rect x="108" y="70" width="4" height="8" fill="#e0b040"/>
+          <circle cx="102" cy="30" r="5" fill="#ff3b5c"/><circle cx="102" cy="48" r="5" fill="#3fd06a"/>
+          <path d="M118 40 q16 0 16 20" fill="none" stroke="#d1584a" stroke-width="2.5"/>
+          <text x="70" y="92" text-anchor="middle" font-family="Kalam" font-size="13" fill="#211f1b">the hardware inside</text>
+        </svg>
+      </div>
+    </figure>
+    <figure class="clip" id="nani" style="right:8%;top:100%" data-rot="-4">
+      <div class="paper sticky" style="--sheet:#fdf3e1;padding:10px 12px 6px"><div class="tape tl pink"></div>
+        <svg width="96" height="110" viewBox="0 0 96 110">
+          <circle cx="48" cy="18" r="11" fill="#e8e4dc" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+          <circle cx="48" cy="40" r="20" fill="#f1c9a5" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+          <path d="M28 36 q20 -22 40 0" fill="#e8e4dc" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+          <circle cx="40" cy="42" r="5" fill="none" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><circle cx="56" cy="42" r="5" fill="none" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><path d="M45 42 h6" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+          <circle cx="40" cy="42" r="1.4" fill="#211f1b"/><circle cx="56" cy="42" r="1.4" fill="#211f1b"/>
+          <path d="M42 51 q6 4 12 0" fill="none" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><circle cx="34" cy="49" r="3" fill="#f2a3a3" opacity=".6"/><circle cx="62" cy="49" r="3" fill="#f2a3a3" opacity=".6"/>
+          <path d="M22 108 q2 -40 26 -44 q24 4 26 44 z" fill="#c95b6e" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><path d="M34 70 q14 10 28 0" fill="none" stroke="#fbd560" stroke-width="3"/>
+          <path d="M74 80 l10 26" stroke="#8a6a46" stroke-width="3" stroke-linecap="round"/></svg>
+        <div class="cap" style="margin-top:0">nani</div>
+      </div>
+    </figure>
+    <figure class="clip" id="saathi" data-fx="saathi" title="click to talk to Saathi" style="right:0;top:4%" data-rot="6">
+      <div class="paper kraft"><div class="tape"></div>
+        <svg width="270" height="168" viewBox="0 0 290 180">
+          <defs>
+            <pattern id="corr" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="4" fill="#cfae7e"/><line x1="0" y1="0" x2="0" y2="4" stroke="#bf9c69" stroke-width="1"/></pattern>
+            <radialGradient id="cone" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#3a3a3a"/><stop offset=".55" stop-color="#151515"/><stop offset=".8" stop-color="#2a2a2a"/><stop offset="1" stop-color="#0d0d0d"/></radialGradient>
+          </defs>
+          <!-- top face -->
+          <path d="M22 34 L44 16 L284 16 L264 34 Z" fill="#d9bb8c" stroke="#7a5c33" stroke-width="1.4"/>
+          <!-- side face -->
+          <path d="M264 34 L284 16 L284 140 L264 162 Z" fill="#b8955f" stroke="#7a5c33" stroke-width="1.4"/>
+          <!-- front -->
+          <rect x="22" y="34" width="242" height="128" fill="url(#corr)" stroke="#7a5c33" stroke-width="1.6"/>
+          <!-- LEDs on top edge -->
+          <g><ellipse cx="64" cy="27" rx="5" ry="3" fill="#4a3a26" opacity=".35"/><rect x="60" y="17" width="8" height="10" rx="4" fill="#ff3b5c"/><circle cx="64" cy="19" r="9" fill="#ff3b5c" opacity=".18"/></g>
+          <g><rect x="96" y="17" width="8" height="10" rx="4" fill="#e8e04a"/><circle cx="100" cy="19" r="9" fill="#e8e04a" opacity=".2"/></g>
+          <g><rect x="132" y="17" width="8" height="10" rx="4" fill="#3fd06a"/><circle cx="136" cy="19" r="9" fill="#3fd06a" opacity=".2"/></g>
+          <!-- speaker -->
+          <rect x="40" y="82" width="66" height="64" rx="6" fill="#111" stroke="#000"/>
+          <circle cx="73" cy="114" r="27" fill="url(#cone)"/><circle cx="73" cy="114" r="10" fill="#2b2b2b" stroke="#444"/>
+          <g fill="#e8e8e8"><circle cx="46" cy="88" r="3"/><circle cx="100" cy="88" r="3"/><circle cx="46" cy="140" r="3"/><circle cx="100" cy="140" r="3"/></g>
+          <!-- push buttons -->
+          <g><rect x="168" y="50" width="20" height="16" fill="#1d1d1d"/><rect x="171" y="52" width="14" height="10" fill="#333"/><rect x="183" y="52" width="3" height="12" fill="#d43a2f"/></g>
+          <g><rect x="200" y="50" width="20" height="16" fill="#1d1d1d"/><rect x="203" y="52" width="14" height="10" fill="#333"/><rect x="215" y="52" width="3" height="12" fill="#d43a2f"/></g>
+          <g><rect x="232" y="50" width="20" height="16" fill="#1d1d1d"/><rect x="235" y="52" width="14" height="10" fill="#333"/><rect x="247" y="52" width="3" height="12" fill="#d43a2f"/></g>
+          <!-- knobs -->
+          <g><circle cx="190" cy="124" r="9" fill="#9a9a9a" stroke="#555"/><rect x="187" y="110" width="6" height="15" rx="2" fill="#c9c9c9" stroke="#777"/></g>
+          <g><circle cx="230" cy="124" r="9" fill="#9a9a9a" stroke="#555"/><rect x="227" y="110" width="6" height="15" rx="2" fill="#c9c9c9" stroke="#777"/></g>
+          <!-- handwritten labels -->
+          <g font-family="Kalam" font-size="11.2" fill="#211f1b" text-anchor="middle">
+            <text x="178" y="80">start</text><text x="210" y="80">stop</text><text x="242" y="80">reset</text>
+            <text x="190" y="150">volume</text><text x="230" y="150">spare</text><text x="100" y="11">status lights</text>
+          </g>
+        </svg>
+        <div class="cap">Saathi, the prototype: 3 buttons, 2 knobs, a speaker and status lights · <b>click to talk</b></div>
+      </div>
+    </figure>
   </div>
-</section>
+</div>
 
-<section class="reveal">
-  <h2>Other projects</h2>
-  <div class="card">
-    <ul class="news">
-      <li><span class="d">2026</span><span><b>local-flow</b>: open-source dictation tool that runs fully locally. <a href="https://github.com/Bhuvan-Arora-1313/local-flow">GitHub</a></span></li>
-      <li><span class="d">2025</span><span><b>AI Buddies</b>: multi-agent LLM application. <a href="https://github.com/Bhuvan-Arora-1313/AI-Buddies-Multi-Agent-System">GitHub</a></span></li>
-      <li><span class="d">2025</span><span><b>BITS Connect</b>: Flutter and Firebase app that lets BITS Pilani students form study groups and meetups. <a href="https://github.com/Bhuvan-Arora-1313/BITS-Connect-App">GitHub</a></span></li>
-    </ul>
+<!-- ================= WORK ================= -->
+<div style="position:relative"><div class="birds"><svg class="bird" style="top:8px;animation-delay:-2s" width="26" height="14" viewBox="0 0 26 14"><path d="M1 8 q6 -8 12 0 q6 -8 12 0"/></svg><svg class="bird" style="top:22px;animation-delay:-3.2s" width="26" height="14" viewBox="0 0 26 14"><path d="M1 8 q6 -8 12 0 q6 -8 12 0"/></svg><svg class="bird" style="top:2px;animation-delay:-4.1s" width="26" height="14" viewBox="0 0 26 14"><path d="M1 8 q6 -8 12 0 q6 -8 12 0"/></svg></div></div>
+<h2 class="section-title" id="work"><span>work &amp; school</span></h2>
+<div class="row">
+  <div class="doodle rocketwrap" style="right:22%;top:auto;bottom:-110px;pointer-events:auto">
+  <div class="rocket idle" id="rocket" title="click to launch!"><svg width="54" height="104" viewBox="0 0 54 104">
+    <path d="M27 2 C 42 16 44 46 40 70 H14 C 10 46 12 16 27 2 Z" fill="#fffdf6" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="27" cy="34" r="8" fill="#cfe3f5" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/><path d="M27 2 C 33 8 37 14 39 22 H15 C 17 14 21 8 27 2 Z" fill="#d1584a" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M14 56 L2 76 L14 70 Z M40 56 L52 76 L40 70 Z" fill="#d1584a" stroke="#211f1b" stroke-width="2" stroke-linejoin="round"/>
+    <path class="flame" d="M18 72 Q27 104 36 72 Z" fill="#f2a33a"/><path class="flame" d="M22 72 Q27 92 32 72 Z" fill="#fbd560"/></svg>
+  <div class="hand" style="font-size:.85rem;text-align:center">launch me!</div></div></div>
+  <div class="doodle wide" style="left:24%;top:auto;bottom:-70px"><svg width="130" height="48" viewBox="0 0 130 48">
+  <rect x="4" y="6" width="122" height="38" rx="6" fill="#e9e4d8" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+  <g fill="#fffdf6" stroke="#211f1b" stroke-width="1.2"><rect x="10" y="12" width="9" height="8" rx="1.5"/><rect x="22" y="12" width="9" height="8" rx="1.5"/><rect x="34" y="12" width="9" height="8" rx="1.5"/><rect x="46" y="12" width="9" height="8" rx="1.5"/><rect x="58" y="12" width="9" height="8" rx="1.5"/><rect x="70" y="12" width="9" height="8" rx="1.5"/><rect x="82" y="12" width="9" height="8" rx="1.5"/><rect x="94" y="12" width="9" height="8" rx="1.5"/><rect x="106" y="12" width="9" height="8" rx="1.5"/><rect x="14" y="23" width="9" height="8" rx="1.5"/><rect x="26" y="23" width="9" height="8" rx="1.5"/><rect x="38" y="23" width="9" height="8" rx="1.5"/><rect x="50" y="23" width="9" height="8" rx="1.5"/><rect x="62" y="23" width="9" height="8" rx="1.5"/><rect x="74" y="23" width="9" height="8" rx="1.5"/><rect x="86" y="23" width="9" height="8" rx="1.5"/><rect x="98" y="23" width="9" height="8" rx="1.5"/><rect x="34" y="34" width="58" height="6" rx="1.5"/></g></svg></div>
+  <div class="doodle wide tap" data-fx="spill" title="careful, hot chai!" style="left:26%;top:-80px"><svg width="80" height="84" viewBox="0 0 80 84">
+    <path class="ink" stroke="#9a8f80" d="M26 20 q-6 -8 0 -14 M38 20 q-6 -8 0 -14 M50 20 q-6 -8 0 -14"/>
+    <path d="M14 28 h48 l-5 42 q-1 8 -9 8 h-20 q-8 0 -9 -8 z" fill="#e8d2b4" stroke="#211f1b" stroke-width="2.2" stroke-linejoin="round"/>
+    <path class="ink" d="M62 38 q14 0 12 12 q-2 10 -14 10"/><text x="24" y="56" font-family="Kalam" font-size="12" fill="#211f1b">chai</text></svg></div>
+  <div class="side left">
+    <figure class="clip" style="left:0;top:10%" data-rot="-4">
+      <div class="paper graphp"><span class="lines"></span><div class="tape"></div>
+        <svg width="270" height="140" viewBox="0 0 290 150">
+          <text x="4" y="18" font-family="Kalam" font-size="14.4" fill="#211f1b">damaged barcode recovery, Samsung</text>
+          <g fill="#fffdf6" stroke="#211f1b" stroke-width="1.5">
+            <rect x="4" y="40" width="58" height="40" rx="5"/><rect x="78" y="40" width="58" height="40" rx="5"/><rect x="152" y="40" width="58" height="40" rx="5"/><rect x="226" y="40" width="58" height="40" rx="5"/>
+          </g>
+          <g font-family="Kalam" font-size="11.6" fill="#211f1b" text-anchor="middle">
+            <text x="33" y="57">damaged</text><text x="33" y="71">barcode</text>
+            <text x="107" y="57">FFT</text><text x="107" y="71">embedding</text>
+            <text x="181" y="57">ANN</text><text x="181" y="71">shortlist</text>
+            <text x="255" y="57">cross-corr.</text><text x="255" y="71">rerank</text>
+          </g>
+          <g stroke="#b9471a" stroke-width="1.8" fill="#b9471a"><line x1="62" y1="60" x2="74" y2="60"/><path d="M74 56 l6 4 l-6 4 z"/><line x1="136" y1="60" x2="148" y2="60"/><path d="M148 56 l6 4 l-6 4 z"/><line x1="210" y1="60" x2="222" y2="60"/><path d="M222 56 l6 4 l-6 4 z"/></g>
+          <text x="4" y="118" font-family="Kalam" font-size="24.0" fill="#3b7a4e">95.75%</text>
+          <text x="100" y="116" font-family="Kalam" font-size="14.4" fill="#211f1b">accuracy, 9 barcode types</text>
+        </svg>
+      </div>
+    </figure>
   </div>
-</section>
+  <div class="center">
+    <div class="paper proj" style="transform:rotate(0.3deg)"><div class="tape"></div>
+      <h2><img src="img/samsung_logo.svg" alt="Samsung" style="height:30px;vertical-align:-6px;margin-right:10px">Samsung R&amp;D Institute India, Bengaluru</h2>
+      <p class="meta">Advanced Developer Intern (MAGPIE) · May – Jul 2026 · received a pre-placement offer</p>
+      <p>Built a conversational daily planner on Google's A2UI (Agent-to-UI) protocol, and a two-stage retrieval pipeline that matches damaged barcodes to their database entry with 95.75% accuracy across 9 barcode types.</p>
+      <h2 style="margin-top:20px"><span style="display:inline-flex;align-items:center;gap:6px;vertical-align:-6px;margin-right:8px"><svg width="38" height="24" viewBox="0 0 48 30"><circle cx="32" cy="16" r="12" fill="#4fae84"/><circle cx="22" cy="14" r="13" fill="#68dca8"/><circle cx="14" cy="19" r="10" fill="#87e8c3"/></svg></span>CloudDefense.AI</h2>
+      <p class="meta">Practice School I Intern · May – Jul 2025</p>
+      <h2 style="margin-top:20px"><img src="img/bits_logo.png" class="bitslogo" title="click me" alt="BITS Pilani" style="width:30px;height:30px;vertical-align:-7px;margin-right:8px">BITS Pilani</h2>
+      <p class="meta">B.E. Computer Science · CGPA 9.57/10 · 2023 – May 2027</p>
+    </div>
+  </div>
+  <div class="side right">
+    <figure class="clip" style="right:14%;top:16%" data-rot="5">
+      <div class="paper sticky"><div class="tape blue"></div>
+        <div style="display:flex;align-items:center;gap:14px;width:230px">
+          <div style="width:96px;height:96px;background:#000;color:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:Inter,sans-serif;font-weight:500;font-size:17px;line-height:1.15;letter-spacing:.2px;box-shadow:0 2px 4px rgba(0,0,0,.25);transform:rotate(-4deg)">Samsung<br>Research</div>
+          <div class="hand" style="font-size:2.08rem;line-height:1;color:var(--accent);font-weight:700">PPO ✓</div>
+        </div>
+      </div>
+    </figure>
+  </div>
+</div>
 
-<footer>
-  <span class="script sign">Thanks for stopping by!</span>
-  <span>© 2026 Bhuvan Arora</span>
-  <span>Last updated November 2026</span>
-</footer>
+<div style="position:relative;height:170px;margin:40px 0 -20px"><div class="track" style="top:0;bottom:auto"><div class="road"></div>
+  <div class="vehicle truckv" data-fx="honk" title="beep beep!"><svg width="150" height="52" viewBox="0 0 150 52">
+    <g stroke="#211f1b" stroke-width="1.8" stroke-linejoin="round">
+    <rect x="44" y="6" width="98" height="32" rx="3" fill="#e0b040"/><path d="M6 38 v-18 l10 -14 h26 v32 z" fill="#d1584a"/><path d="M16 9 h20 v12 h-28 z" fill="#cfe3f5"/></g>
+    <g fill="#211f1b"><circle cx="24" cy="42" r="7"/><circle cx="104" cy="42" r="7"/><circle cx="124" cy="42" r="7"/></g>
+    <g fill="#c9ccd3"><circle cx="24" cy="42" r="2.5"/><circle cx="104" cy="42" r="2.5"/><circle cx="124" cy="42" r="2.5"/></g></svg></div></div><div class="track" style="top:78px;bottom:auto"><div class="rail"></div>
+  <div class="vehicle train" data-fx="choo" title="all aboard!"><svg width="230" height="48" viewBox="0 0 230 48">
+    <g stroke="#211f1b" stroke-width="1.8" stroke-linejoin="round">
+    <rect x="4" y="10" width="62" height="28" rx="5" fill="#d1584a"/><rect x="50" y="2" width="12" height="10" fill="#211f1b"/>
+    <rect x="12" y="16" width="14" height="10" fill="#fff6d0"/><rect x="32" y="16" width="14" height="10" fill="#fff6d0"/>
+    <rect x="72" y="12" width="72" height="26" rx="4" fill="#2c5ca3"/><rect x="150" y="12" width="72" height="26" rx="4" fill="#3b7a4e"/></g>
+    <g fill="#fff6d0" stroke="#211f1b"><rect x="80" y="18" width="12" height="9"/><rect x="100" y="18" width="12" height="9"/><rect x="120" y="18" width="12" height="9"/><rect x="158" y="18" width="12" height="9"/><rect x="178" y="18" width="12" height="9"/><rect x="198" y="18" width="12" height="9"/></g>
+    <g fill="#211f1b"><circle cx="16" cy="40" r="5"/><circle cx="40" cy="40" r="5"/><circle cx="58" cy="40" r="5"/><circle cx="86" cy="40" r="5"/><circle cx="130" cy="40" r="5"/><circle cx="164" cy="40" r="5"/><circle cx="208" cy="40" r="5"/></g></svg></div></div></div>
+<footer>thanks for stopping by! ✂︎</footer>
 </div>
 
 <script>
 (function () {
-  // Theme toggle (remembered per browser; storage may be blocked)
-  var root = document.documentElement, btn = document.getElementById('theme');
-  var saved = null; try { saved = localStorage.getItem('theme'); } catch (e) {}
-  root.setAttribute('data-theme', saved === 'dark' ? 'dark' : 'light');
-  btn.addEventListener('click', function () {
-    var dark = root.getAttribute('data-theme') === 'dark';
-    var next = dark ? 'light' : 'dark';
-    root.setAttribute('data-theme', next);
-    try { localStorage.setItem('theme', next); } catch (e) {}
-  });
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var mouse = { x: -9999, y: -9999, active: false };
+  var ripples = [];
+  window.addEventListener('pointermove', function (e) { mouse.x = e.clientX; mouse.y = e.clientY; mouse.active = true; });
+  document.addEventListener('pointerleave', function () { mouse.active = false; mouse.x = mouse.y = -9999; });
+  /* no click ripples */
 
-  // Reveal on scroll
-  var els = document.querySelectorAll('.reveal');
-  if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: 0.08 });
-    els.forEach(function (el) { io.observe(el); });
-  } else { els.forEach(function (el) { el.classList.add('in'); }); }
-
-  // Spotlight on research cards
-  document.querySelectorAll('.proj').forEach(function (c) {
-    c.addEventListener('pointermove', function (e) {
-      var r = c.getBoundingClientRect();
-      c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-      c.style.setProperty('--my', (e.clientY - r.top) + 'px');
-    });
-  });
-
-  // Full-page dithered background that reacts to the cursor (WebGL ordered dither)
-  (function () {
-    var c = document.getElementById('bg');
-    var gl = c.getContext('webgl', { antialias: false });
-    if (!gl) { c.style.display = 'none'; return; }
-    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
-    var fs = [
-      'precision highp float;',
-      'uniform vec2 R;uniform float T;uniform vec2 M;uniform float MS;uniform vec3 INK;uniform vec3 BG;uniform float CELL;uniform vec3 RP[4];',
-      'float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
-      'float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);',
-      ' return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}',
-      'float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<4;i++){v+=a*n(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return v;}',
-      'float b2(vec2 a){a=floor(a);return fract(dot(a,vec2(.5,a.y*.75)));}',
-      'float b4(vec2 a){return b2(.5*a)*.25+b2(a);}',
-      'float b8(vec2 a){return b4(.5*a)*.25+b2(a);}',
-      'void main(){',
-      ' vec2 fc=gl_FragCoord.xy; vec2 cell=floor(fc/CELL); vec2 lc=mod(fc,CELL);',
-      ' if(lc.x>CELL*.62||lc.y>CELL*.62){gl_FragColor=vec4(BG,1.);return;}',
-      ' vec2 cc=(cell+.5)*CELL; vec2 uv=cc/R.y;',
-      ' vec2 q=vec2(fbm(uv*1.8+vec2(0.,T*.04)),fbm(uv*1.8+vec2(5.2,1.3)-T*.03));',
-      ' float base=smoothstep(.45,.85,fbm(uv*1.3+q*1.6+vec2(T*.02,-T*.015)))*.38;',
-      ' float d=length(cc-M)/R.y; float glow=MS*exp(-d*d*16.);',
-      ' float rip=0.; for(int i=0;i<4;i++){vec3 r=RP[i]; if(r.z>=0.){float age=T-r.z; float rd=length(cc-r.xy)/R.y;',
-      '   rip+=exp(-pow((rd-age*.6)*12.,2.))*max(0.,1.-age*.6);}}',
-      ' float v=base+glow*.95+rip*.8;',
-      ' float on=step(b8(cell),v);',
-      ' float a=on*(.15+.32*clamp(glow+rip,0.,1.));',
-      ' gl_FragColor=vec4(mix(BG,INK,a),1.);',
-      '}'].join('\n');
-    function sh(t, src) { var o = gl.createShader(t); gl.shaderSource(o, src); gl.compileShader(o);
-      if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) { console.warn(gl.getShaderInfoLog(o)); return null; } return o; }
-    var v = sh(gl.VERTEX_SHADER, vs), f = sh(gl.FRAGMENT_SHADER, fs);
-    if (!v || !f) { c.style.display = 'none'; return; }
-    var pr = gl.createProgram(); gl.attachShader(pr, v); gl.attachShader(pr, f); gl.linkProgram(pr); gl.useProgram(pr);
-    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
-    var loc = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-    var U = {}; ['R','T','M','MS','INK','BG','CELL','RP'].forEach(function (k) { U[k] = gl.getUniformLocation(pr, k); });
-    var dpr = 1, mx = -1e4, my = -1e4, tx = -1e4, ty = -1e4, ms = 0, mt = 0, ri = 0;
-    var ripples = [0,0,-1, 0,0,-1, 0,0,-1, 0,0,-1], t0 = performance.now(), ink = [0,0,0], bgc = [1,1,1], tick = 0;
-    function hex(x) { var m = x.trim().match(/^#([0-9a-f]{6})$/i); if (!m) return null; var n2 = parseInt(m[1], 16);
-      return [(n2 >> 16 & 255) / 255, (n2 >> 8 & 255) / 255, (n2 & 255) / 255]; }
-    function readColors() { var cs = getComputedStyle(root);
-      ink = cs.getPropertyValue('--ink').split(',').map(function (x) { return parseFloat(x) / 255; });
-      bgc = hex(cs.getPropertyValue('--bg')) || bgc; }
-    function size() { dpr = Math.min(window.devicePixelRatio || 1, 2);
-      c.width = Math.round(window.innerWidth * dpr); c.height = Math.round(window.innerHeight * dpr); gl.viewport(0, 0, c.width, c.height); }
-    function now() { return (performance.now() - t0) / 1000; }
-    window.addEventListener('pointermove', function (e) { tx = e.clientX * dpr; ty = (window.innerHeight - e.clientY) * dpr; mt = 1;
-      if (mx < -1e3) { mx = tx; my = ty; } if (reduce) frame(); });
-    document.addEventListener('pointerleave', function () { mt = 0; });
-    window.addEventListener('blur', function () { mt = 0; });
-    window.addEventListener('pointerdown', function (e) { if (reduce) return;
-      ripples[ri * 3] = e.clientX * dpr; ripples[ri * 3 + 1] = (window.innerHeight - e.clientY) * dpr; ripples[ri * 3 + 2] = now(); ri = (ri + 1) % 4; });
-    function frame() {
-      if (tick++ % 30 === 0) readColors();
-      if (reduce) { mx = tx; my = ty; ms = mt; } else { mx += (tx - mx) * 0.14; my += (ty - my) * 0.14; ms += (mt - ms) * 0.05; }
-      gl.uniform2f(U.R, c.width, c.height); gl.uniform1f(U.T, reduce ? 8.0 : now());
-      gl.uniform2f(U.M, mx, my); gl.uniform1f(U.MS, ms);
-      gl.uniform3fv(U.INK, ink); gl.uniform3fv(U.BG, bgc); gl.uniform1f(U.CELL, 5 * dpr); gl.uniform3fv(U.RP, ripples);
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
+  /* ---------- graph-paper grid that bends like a net around the cursor ---------- */
+  var cv = document.getElementById('net'), ctx = cv.getContext('2d'), W, H, dpr;
+  function size() { dpr = Math.min(window.devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+  size(); addEventListener('resize', size);
+  var R = 170, PUSH = 0; // no bending: the grid stays still
+  function disp(x, y, now) {
+    var dx = 0, dy = 0;
+    if (mouse.active) {
+      var ax = x - mouse.x, ay = y - mouse.y, d = Math.sqrt(ax * ax + ay * ay);
+      if (d < R && d > .01) { var k = Math.pow(1 - d / R, 2) * PUSH; dx += ax / d * k; dy += ay / d * k; }
     }
-    function loop() { if (!document.hidden) frame(); requestAnimationFrame(loop); }
-    window.addEventListener('resize', function () { size(); frame(); });
-    btn.addEventListener('click', function () { tick = 0; setTimeout(frame, 0); });
-    size(); readColors(); if (reduce) frame(); else loop();
+    for (var i = 0; i < ripples.length; i++) {
+      var r = ripples[i], age = (now - r.t) / 1000, bx = x - r.x, by = y - r.y, rd = Math.sqrt(bx * bx + by * by);
+      var front = age * 520, w = 60, amp = 14 * Math.max(0, 1 - age / 1.4);
+      var f = Math.exp(-Math.pow((rd - front) / w, 2)) * amp;
+      if (rd > .01) { dx += bx / rd * f; dy += by / rd * f; }
+    }
+    return [dx, dy];
+  }
+  var scrollY0 = 0;
+  function drawGrid(now) {
+    ctx.clearRect(0, 0, W, H);
+    var off = -(scrollY % 20);
+    var STEP = 12;
+    function line(x0, y0, x1, y1, major) {
+      ctx.beginPath();
+      var len = Math.max(Math.abs(x1 - x0), Math.abs(y1 - y0)), n = Math.ceil(len / STEP);
+      for (var i = 0; i <= n; i++) {
+        var x = x0 + (x1 - x0) * i / n, y = y0 + (y1 - y0) * i / n, d = disp(x, y, now);
+        if (i === 0) ctx.moveTo(x + d[0], y + d[1]); else ctx.lineTo(x + d[0], y + d[1]);
+      }
+      ctx.strokeStyle = major ? 'rgba(60,100,155,.24)' : 'rgba(60,100,155,.12)'; ctx.lineWidth = major ? 1.1 : 1; ctx.stroke();
+    }
+    var startY = off - 20, baseIndex = Math.floor(scrollY / 20);
+    for (var x = 0, i = 0; x <= W + 20; x += 20, i++) line(x, -20, x, H + 20, i % 5 === 0);
+    for (var y = startY, j = 0; y <= H + 20; y += 20, j++) line(-20, y, W + 20, y, (baseIndex + j - 1) % 5 === 0);
+    // soft pencil-shade under the cursor: the nearest grid lines just get a little darker
+    if (mouse.active) {
+      ctx.save(); ctx.beginPath(); ctx.arc(mouse.x, mouse.y, 120, 0, Math.PI * 2); ctx.clip();
+      var g = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 120);
+      g.addColorStop(0, 'rgba(60,100,155,.16)'); g.addColorStop(1, 'rgba(60,100,155,0)');
+      ctx.strokeStyle = g; ctx.lineWidth = 1.2; ctx.beginPath();
+      for (var gx = Math.floor((mouse.x - 120) / 20) * 20; gx <= mouse.x + 120; gx += 20) { ctx.moveTo(gx, mouse.y - 120); ctx.lineTo(gx, mouse.y + 120); }
+      for (var gy = Math.floor((mouse.y - 120 - off) / 20) * 20 + off; gy <= mouse.y + 120; gy += 20) { ctx.moveTo(mouse.x - 120, gy); ctx.lineTo(mouse.x + 120, gy); }
+      ctx.stroke(); ctx.restore();
+    }
+  }
+
+  /* ---------- clippings: drift on their own, shy away from the cursor, draggable ---------- */
+  var clips = [].slice.call(document.querySelectorAll('.clip')).map(function (el, i) {
+    var c = { el: el, rot: parseFloat(el.dataset.rot || '0'), ph: Math.random() * 6.28, sp: .35 + Math.random() * .35,
+      ax: 5 + Math.random() * 6, ay: 6 + Math.random() * 7, dragX: 0, dragY: 0, px: 0, py: 0, pr: 0, dragging: false };
+    el.addEventListener('pointerdown', function (e) {
+      if (matchMedia('(max-width: 1100px)').matches) return;
+      c.dragging = true; c.sx = e.clientX - c.dragX; c.sy = e.clientY - c.dragY; el.setPointerCapture(e.pointerId); el.classList.add('lift');
+    });
+    el.addEventListener('pointermove', function (e) { if (c.dragging) { c.dragX = e.clientX - c.sx; c.dragY = e.clientY - c.sy; } });
+    el.addEventListener('pointerup', function () { c.dragging = false; setTimeout(function () { el.classList.remove('lift'); }, 300); });
+    return c;
+  });
+  var mobile = function () { return matchMedia('(max-width: 1100px)').matches; };
+
+  function tick(now) {
+    var t = now / 1000;
+    ripples = ripples.filter(function (r) { return now - r.t < 1500; });
+    drawGrid(now);
+    clips.forEach(function (c) {
+      var x = c.dragX, y = c.dragY, r = c.rot;
+      if (!reduce) {
+        x += Math.sin(t * c.sp + c.ph) * c.ax; y += Math.cos(t * c.sp * .8 + c.ph) * c.ay; r += Math.sin(t * c.sp * .6 + c.ph) * 1.6;
+        if (mouse.active && !c.dragging && !mobile()) {
+          var b = c.el.getBoundingClientRect(), cx = b.left + b.width / 2, cy = b.top + b.height / 2, ax = cx - mouse.x, ay = cy - mouse.y, d = Math.sqrt(ax * ax + ay * ay), lim = 260;
+          if (d < lim && d > 1) { var k = (1 - d / lim); x += ax / d * k * 10; y += ay / d * k * 10; r += (ax > 0 ? 1 : -1) * k * 1.5; }
+        }
+      }
+      c.px += (x - c.px) * .12; c.py += (y - c.py) * .12; c.pr += (r - c.pr) * .12;
+      c.el.style.transform = 'translate(' + c.px.toFixed(2) + 'px,' + c.py.toFixed(2) + 'px) rotate(' + c.pr.toFixed(2) + 'deg)';
+    });
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  (function(){ var b=document.getElementById('popper'); if(!b) return;
+    var cols=['#d1584a','#fbd560','#3b7a4e','#2c5ca3','#f2a33a','#b9471a'];
+    function burst(){ var r=b.getBoundingClientRect(), ox=r.left+r.width*.7, oy=r.top+r.height*.25;
+      for(var i=0;i<70;i++){ (function(){ var c=document.createElement('div'); c.className='confetti'; c.style.background=cols[i%cols.length];
+        c.style.left=ox+'px'; c.style.top=oy+'px'; document.body.appendChild(c);
+        var a=-Math.PI/2+(Math.random()-.15)*1.9, v=6+Math.random()*9, vx=Math.cos(a)*v, vy=Math.sin(a)*v, x=0,y=0,rot=Math.random()*360, life=0;
+        (function step(){ life++; vy+=.32; vx*=.985; x+=vx; y+=vy; rot+=9;
+          c.style.transform='translate('+x+'px,'+y+'px) rotate('+rot+'deg)'; c.style.opacity=Math.max(0,1-life/110);
+          if(life<110) requestAnimationFrame(step); else c.remove(); })(); })(); } }
+    b.addEventListener('click',burst); if(!matchMedia('(prefers-reduced-motion: reduce)').matches) setTimeout(burst,900);
+  })();
+
+  (function(){
+    function bubble(el, text){ var r=el.getBoundingClientRect(), b=document.createElement('div'); b.className='bubble'; b.textContent=text;
+      b.style.left=Math.max(8,r.left+r.width/2-60)+'px'; b.style.top=(r.top-36)+'px'; document.body.appendChild(b);
+      setTimeout(function(){ b.style.opacity=0; b.style.transform='translateY(-12px)'; },1300); setTimeout(function(){ b.remove(); },1800); }
+    function bits(el, n, make, o){ var r=el.getBoundingClientRect(), ox=r.left+r.width*(o.fx||.5), oy=r.top+r.height*(o.fy||.5);
+      for(var i=0;i<n;i++){ (function(){ var d=make(); d.classList.add('fxbit'); d.style.left=ox+'px'; d.style.top=oy+'px'; document.body.appendChild(d);
+        var a=(o.a0||0)+(Math.random()-.5)*(o.spread||6.28), v=(o.v||4)+Math.random()*(o.vr||4), vx=Math.cos(a)*v, vy=Math.sin(a)*v, x=0,y=0,life=0,L=o.life||70;
+        (function st(){ life++; vy+=(o.g||.25); x+=vx; y+=vy; if(o.floor && y>o.floor){ y=o.floor; vx*=.6; vy=0; }
+          d.style.transform='translate('+x+'px,'+y+'px)'; d.style.opacity=Math.max(0,1-life/L); if(life<L) requestAnimationFrame(st); else d.remove(); })(); })(); } }
+    function dot(colors, w, h, rad){ return function(){ var d=document.createElement('div'); var z=w+Math.random()*h; d.style.width=z+'px'; d.style.height=z*1.2+'px'; d.style.borderRadius=rad; d.style.background=colors[Math.floor(Math.random()*colors.length)]; return d; }; }
+    var lines=[['> python train.py','reward: 15421','agent ok ✓'],['> open gst-portal','filing GSTR-3B…','ARN generated ✓'],['> book ticket','PNR 4217780932','CNF ✓'],['> write paper','drafting…','arXiv ✓']], li=0;
+    var fx={
+      spill:function(el){ bits(el,28,dot(['#a5672f','#c68a4b','#8a5426'],4,7,'50%'),{fx:.3,fy:.6,a0:Math.PI*.8,spread:1.3,v:3,vr:3,g:.3,life:90,floor:60});
+        el.style.transition='transform .25s'; el.style.transform='rotate(-38deg)'; setTimeout(function(){ el.style.transform=''; },800); bubble(el,'oops! chai spilled ☕'); },
+      glow:function(el){ el.classList.toggle('lit'); bubble(el, el.classList.contains('lit') ? 'idea! 💡' : 'hmm…'); },
+      spin:function(el){ el.classList.add('fast'); bubble(el,'good morning! ☀️'); setTimeout(function(){ el.classList.remove('fast'); },1600); },
+      sparkle:function(el){ bits(el,16,function(){ var d=document.createElement('div'); d.textContent=['✦','✧','★'][Math.floor(Math.random()*3)]; d.style.color='#e0b040'; d.style.fontSize=(10+Math.random()*12)+'px'; return d; },{g:-.02,v:2,vr:3,life:60}); bubble(el,'zzz… let it sleep 🌙'); },
+      type:function(el){ li=(li+1)%lines.length; var ts=el.querySelectorAll('.term text'); for(var k=0;k<ts.length;k++) ts[k].textContent=lines[li][k]; bubble(el,'running…'); },
+      wave:function(el){ el.style.transition='transform .2s'; el.style.transform='rotate(-14deg)'; setTimeout(function(){ el.style.transform='rotate(14deg)'; },200); setTimeout(function(){ el.style.transform=''; },400); bubble(el,"hi! I'm an LLM agent 👋"); },
+      choo:function(el){ bits(el,10,dot(['rgba(160,160,160,.7)'],10,14,'50%'),{fx:.24,fy:.05,a0:-Math.PI/2,spread:.8,v:1.5,vr:1.5,g:-.03,life:70}); bubble(el,'choo choo! 🚂'); },
+      honk:function(el){ bubble(el,'beep beep! 🚚'); el.style.animationPlayState='paused'; setTimeout(function(){ el.style.animationPlayState=''; },900); }
+    };
+    document.addEventListener('click',function(e){ if(e.target.closest('a')) return; var el=e.target.closest('[data-fx]'); if(el && fx[el.dataset.fx]) fx[el.dataset.fx](el); });
+    var rk=document.getElementById('rocket');
+    if(rk) rk.addEventListener('click',function(){ if(rk.classList.contains('launch')) return;
+      bubble(rk,'3… 2… 1… 🚀'); rk.classList.remove('idle');
+      var smoke=setInterval(function(){ bits(rk,3,dot(['rgba(180,180,180,.6)','rgba(240,170,80,.6)'],8,10,'50%'),{fx:.5,fy:.85,a0:Math.PI/2,spread:1.4,v:1,vr:1.5,g:.02,life:50}); },60);
+      setTimeout(function(){ rk.classList.add('launch'); rk.style.transform='translateY(-'+(rk.getBoundingClientRect().top+300)+'px) rotate(6deg)'; rk.style.opacity='0'; },700);
+      setTimeout(function(){ clearInterval(smoke); rk.classList.remove('launch'); rk.style.transform='translateY(60px)'; rk.style.opacity='0';
+        setTimeout(function(){ rk.style.transition='transform 1s ease-out, opacity 1s'; rk.style.transform=''; rk.style.opacity='1';
+          setTimeout(function(){ rk.style.transition=''; rk.classList.add('idle'); },1000); },50); },3600); });
+  })();
+
+  (function(){ var g=document.getElementById('gpu'); if(!g) return;
+    var host=g.parentNode, burning=false;
+    function burn(){ if(burning || matchMedia('(prefers-reduced-motion: reduce)').matches) return; burning=true;
+      var hr=host.getBoundingClientRect(), gr=g.getBoundingClientRect(), ox=gr.left-hr.left+gr.width*.4, oy=gr.top-hr.top+gr.height*.35;
+      var SZ=760, C=4, N=SZ/C, cv=document.createElement('canvas'); cv.width=SZ; cv.height=SZ;
+      cv.style.cssText='position:absolute;left:'+(ox-SZ/2)+'px;top:'+(oy-SZ/2)+'px;width:'+SZ+'px;height:'+SZ+'px;pointer-events:none;z-index:0;transition:opacity 3s';
+      host.insertBefore(cv, host.firstChild); var ctx=cv.getContext('2d');
+      var small=document.createElement('canvas'); small.width=N; small.height=N; var sx=small.getContext('2d'), img=sx.createImageData(N,N), D=img.data;
+      // value noise
+      var P=[]; for(var i=0;i<512;i++) P.push(Math.random());
+      function h(x,y){ return P[((x*73856093)^(y*19349663))&511]; }
+      function vn(x,y){ var xi=Math.floor(x), yi=Math.floor(y), xf=x-xi, yf=y-yi, u=xf*xf*(3-2*xf), v=yf*yf*(3-2*yf);
+        var a=h(xi,yi), b=h(xi+1,yi), c=h(xi,yi+1), d=h(xi+1,yi+1); return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v; }
+      function fbm(x,y){ return vn(x,y)*.55+vn(x*2.1,y*2.1)*.28+vn(x*4.3,y*4.3)*.17; }
+      // ignition time per cell: distance warped by noise, fire spreads unevenly and a bit faster upward
+      var T=new Float32Array(N*N), SPEED=48, TMAX=5.2;
+      for(var y=0;y<N;y++) for(var x=0;x<N;x++){ var dx=(x-N/2)*C, dy=(y-N/2)*C; if(dy<0) dy*=.8;
+        var d=Math.sqrt(dx*dx+dy*dy), n=fbm(x*.09,y*.09); T[y*N+x]=d*(.55+n*1.15)/SPEED + (fbm(x*.35+9,y*.35+9)-.5)*.35; }
+      var parts=[], t0=performance.now(), done=false;
+      function frame(now){ var t=(now-t0)/1000, active=t<TMAX+.8, front=[];
+        for(var i=0;i<N*N;i++){ var Ti=T[i], k=i*4, a=t-Ti;
+          if(Ti>TMAX){ var pre=t-TMAX; // never ignites, but gets heat-browned near the final edge
+            var q=Ti-TMAX; if(q<.5 && pre>0){ D[k]=110; D[k+1]=62; D[k+2]=20; D[k+3]=Math.min(1,pre)*(1-q/.5)*90; } else D[k+3]=0; continue; }
+          if(a<-.55){ D[k+3]=0; continue; }
+          if(a<0){ var f=1+a/.55; D[k]=120; D[k+1]=70; D[k+2]=22; D[k+3]=f*f*120; continue; }           // scorch ahead of the flame
+          var edge = active ? .22 : .22-(t-TMAX-.8)*.25;                                                   // glowing edge, dies out after fire stops
+          if(a<edge){ var e=a/Math.max(.01,edge), fl=.85+Math.random()*.3;
+            D[k]=255; D[k+1]=Math.round((220-170*e)*fl); D[k+2]=Math.round((90-80*e)*fl); D[k+3]=255; if(active && a<.08) front.push(i); continue; }
+          if(a<.55){ var c=(a-.22)/.33; D[k]=Math.round(60-35*c); D[k+1]=Math.round(32-20*c); D[k+2]=Math.round(14-8*c); D[k+3]=245; continue; } // char rim
+          D[k]=28; D[k+1]=21; D[k+2]=16; D[k+3]=235;                                                       // burnt-through hole
+        }
+        sx.putImageData(img,0,0); ctx.clearRect(0,0,SZ,SZ); ctx.imageSmoothingEnabled=true; ctx.filter='blur(2px)'; ctx.drawImage(small,0,0,SZ,SZ); ctx.filter='none';
+        // flames licking up from the front, plus smoke
+        for(var j=0;j<Math.min(front.length,7);j++){ var fi=front[Math.floor(Math.random()*front.length)];
+          parts.push({x:(fi%N)*C, y:Math.floor(fi/N)*C, vy:-(30+Math.random()*40), life:0, L:.45+Math.random()*.35, s:6+Math.random()*9, smoke:false});
+          if(Math.random()<.25) parts.push({x:(fi%N)*C, y:Math.floor(fi/N)*C, vy:-(25+Math.random()*25), vx:(Math.random()-.5)*14, life:0, L:2+Math.random()*1.5, s:10, smoke:true}); }
+        var dt=1/60;
+        parts=parts.filter(function(p){ p.life+=dt; if(p.life>p.L) return false; p.y+=p.vy*dt; p.x+=(p.vx||Math.sin(p.life*14+p.s)*12)*dt; var u=p.life/p.L;
+          if(p.smoke){ var r=p.s+u*38; var gr2=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,r); gr2.addColorStop(0,'rgba(90,85,80,'+(.22*(1-u))+')'); gr2.addColorStop(1,'rgba(90,85,80,0)'); ctx.fillStyle=gr2; ctx.beginPath(); ctx.arc(p.x,p.y,r,0,6.28); ctx.fill(); }
+          else { var w=p.s*(1-u*.6), hgt=p.s*2.4*(1-u*.3); ctx.save(); ctx.translate(p.x,p.y); ctx.globalCompositeOperation='lighter';
+            var fg=ctx.createLinearGradient(0,0,0,-hgt); fg.addColorStop(0,'rgba(255,120,20,'+(.9*(1-u))+')'); fg.addColorStop(.6,'rgba(255,190,60,'+(.7*(1-u))+')'); fg.addColorStop(1,'rgba(255,240,170,0)');
+            ctx.fillStyle=fg; ctx.beginPath(); ctx.moveTo(-w/2,0); ctx.quadraticCurveTo(-w*.6,-hgt*.5,0,-hgt); ctx.quadraticCurveTo(w*.6,-hgt*.5,w/2,0); ctx.closePath(); ctx.fill(); ctx.restore(); }
+          return true; });
+        if(t>TMAX+4 && !done){ done=true; cv.style.opacity='0'; setTimeout(function(){ cv.remove(); burning=false; },3100); }
+        if(!(done && t>TMAX+7.2)) requestAnimationFrame(frame); }
+      requestAnimationFrame(frame); } var st=0, btn=g.querySelector('.gpubtn'), q=g.querySelector('.gpuqueue'), t=g.querySelector('.gputemp'), timer;
+    function say(text){ var r=g.getBoundingClientRect(), b=document.createElement('div'); b.className='bubble'; b.textContent=text; b.style.left=Math.max(8,r.left-20)+'px'; b.style.top=(r.top-70)+'px'; document.body.appendChild(b);
+      setTimeout(function(){ b.style.opacity=0; b.style.transform='translateY(-12px)'; },1800); setTimeout(function(){ b.remove(); },2300); }
+    g.addEventListener('click',function(){ clearInterval(timer); st=(st+1)%3;
+      if(st===1){ g.classList.remove('queued'); g.classList.add('hot'); btn.textContent='■ stop! it\'s burning'; q.textContent='';
+        var temp=42; timer=setInterval(function(){ temp=Math.min(99,temp+3); t.textContent=temp+'°C'; if(temp>=99){ clearInterval(timer); } },60);
+        say('🔥 GPUs at 99°C. RL run going…'); burn(); }
+      else if(st===2){ g.classList.remove('hot'); g.classList.add('queued'); t.textContent='—'; btn.textContent='⏳ waiting…';
+        var pos=47; q.textContent='no GPUs free · you are #'+pos+' in queue'; say('cluster busy. long queue 😩');
+        timer=setInterval(function(){ pos=Math.max(1,pos-1); q.textContent='no GPUs free · you are #'+pos+' in queue'; if(pos===1) clearInterval(timer); },900); }
+      else { g.classList.remove('queued','hot'); t.textContent='42°C'; btn.textContent='▶ start training'; q.textContent=''; say('cooled down. try again?'); } });
+  })();
+
+  (function(){ var dev=document.getElementById('saathi'), nani=document.getElementById('nani'); if(!dev||!nani) return; var busy=false, moved=false, sx=0, sy=0;
+    dev.addEventListener('pointerdown',function(e){ sx=e.clientX; sy=e.clientY; moved=false; });
+    dev.addEventListener('pointerup',function(e){ if(Math.abs(e.clientX-sx)+Math.abs(e.clientY-sy)>6) moved=true; });
+    var script=[['bot','Hi, I am Saathi! How may I help you?'],['human','Remind me to take my medicine at 8 pm.'],['bot','Done! I will remind you at 8 pm. 💊'],
+      ['human','Call my daughter.'],['bot','Calling your daughter now… 📞'],['human','And what is the weather today?'],['bot','Sunny and warm. Please drink water! ☀️']];
+    function show(kind,text,i){ var who=kind==='bot'?dev:nani, r=who.getBoundingClientRect(), c=document.createElement('div'); c.className='chat '+kind;
+      c.innerHTML='<span class="who">'+(kind==='bot'?'Saathi':'Nani')+'</span>'+text; document.body.appendChild(c);
+      var w=c.offsetWidth, h=c.offsetHeight, x=kind==='bot' ? r.left+r.width/2-w/2 : r.right-20, y=(kind==='bot' ? r.top-h-14 : r.top-h+10);
+      x=Math.min(Math.max(8,x), innerWidth-w-8); c.style.left=(x+scrollX)+'px'; c.style.top=(y+scrollY)+'px';
+      requestAnimationFrame(function(){ c.classList.add('show'); });
+      setTimeout(function(){ c.classList.remove('show'); },2300); setTimeout(function(){ c.remove(); },2700); }
+    dev.addEventListener('click',function(){ if(moved||busy) return; busy=true;
+      script.forEach(function(line,i){ setTimeout(function(){ show(line[0],line[1],i); },i*2500); });
+      setTimeout(function(){ busy=false; },script.length*2500); });
+  })();
+
+  (function(){ var sx=0, sy=0;
+    document.addEventListener('pointerdown',function(e){ sx=e.clientX; sy=e.clientY; },true);
+    document.addEventListener('click',function(e){ var el=e.target.closest('.bitsbadge') || e.target.closest('.bitslogo'); if(!el || Math.abs(e.clientX-sx)+Math.abs(e.clientY-sy)>6) return;
+      var r=el.getBoundingClientRect(), x=r.left+r.width/2+scrollX, y=r.top+scrollY;
+      var m=document.createElement('div'); m.className='magic'; m.textContent="It's Magic ✨"; m.style.left=x+'px'; m.style.top=(y-30)+'px'; document.body.appendChild(m);
+      setTimeout(function(){ m.remove(); },2700);
+      for(var i=0;i<14;i++){ (function(i){ var sp=document.createElement('div'); sp.className='spark'; sp.textContent=['✦','✧','★','·'][i%4];
+        sp.style.left=(x+(Math.random()-.5)*r.width*1.4)+'px'; sp.style.top=(y+Math.random()*r.height)+'px'; sp.style.fontSize=(10+Math.random()*14)+'px'; document.body.appendChild(sp);
+        sp.animate([{transform:'translateY(0) scale(.4)',opacity:0},{transform:'translateY(-30px) scale(1)',opacity:1,offset:.3},{transform:'translateY(-'+(70+Math.random()*60)+'px) scale(.6)',opacity:0}],{duration:1600+Math.random()*800,easing:'ease-out'}).onfinish=function(){ sp.remove(); }; })(i); }
+    });
   })();
 })();
 </script>
