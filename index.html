@@ -228,6 +228,7 @@
     .side { display: none !important; }
     .side.m { display: flex !important; flex-wrap: wrap; justify-content: center; gap: 14px; min-height: 0; order: 2; }
     .side .clip { display: none; }
+    .clip, .clip * { touch-action: auto !important; }
     .side .clip[data-m] { display: block; position: relative !important; left: auto !important; right: auto !important; top: auto !important;
       max-width: 100%; transform: rotate(-1.5deg) !important; cursor: default; }
     .side .clip[data-m] img, .side .clip[data-m] svg { max-width: 100%; height: auto; }
