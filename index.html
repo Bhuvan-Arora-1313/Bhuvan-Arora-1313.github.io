@@ -248,6 +248,7 @@
     .pub .a { font-size: .8rem; }
     footer { margin-top: 40px; }
   }
+  #cycle svg { max-width: 100%; height: auto; display: block; } .cyc { transform-box: fill-box; transform-origin: center; }
   footer { text-align: center; position: relative; z-index: 2; font-family: "Kalam"; font-size: 1.3rem; color: var(--muted); margin-top: 90px; }
 
   @media (max-width: 1100px) {
@@ -700,6 +701,40 @@
 </div>
 
 
+
+<!-- ================= CYCLE ================= -->
+<h2 class="section-title" id="cycle-title"><span>how it actually goes</span></h2>
+<div class="row">
+  <div class="side left"></div>
+  <div class="center" style="display:flex;justify-content:center"><figure id="cycle" style="margin:0;transform:rotate(-1deg)">
+      <div class="paper lined" style="padding:16px 14px 10px 40px"><span class="lines"></span><div class="tape"></div>
+        <svg width="460" height="430" viewBox="0 0 460 430">
+          <defs><marker id="arr" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#b9471a"/></marker>
+            <path id="loop" d="M230 65 A150 150 0 1 1 229.99 65 Z"/></defs>
+          <path d="M277.2 72.6 A150 150 0 0 1 329.7 102.9" fill="none" stroke="#b9471a" stroke-width="2.2" stroke-dasharray="6 5" marker-end="url(#arr)"/><path d="M376.9 184.7 A150 150 0 0 1 376.9 245.3" fill="none" stroke="#b9471a" stroke-width="2.2" stroke-dasharray="6 5" marker-end="url(#arr)"/><path d="M329.7 327.1 A150 150 0 0 1 277.2 357.4" fill="none" stroke="#b9471a" stroke-width="2.2" stroke-dasharray="6 5" marker-end="url(#arr)"/><path d="M182.8 357.4 A150 150 0 0 1 130.3 327.1" fill="none" stroke="#b9471a" stroke-width="2.2" stroke-dasharray="6 5" marker-end="url(#arr)"/><path d="M83.1 245.3 A150 150 0 0 1 83.1 184.7" fill="none" stroke="#b9471a" stroke-width="2.2" stroke-dasharray="6 5" marker-end="url(#arr)"/><path d="M130.3 102.9 A150 150 0 0 1 182.8 72.6" fill="none" stroke="#b9471a" stroke-width="2.2" stroke-dasharray="6 5" marker-end="url(#arr)"/><g class="cyc" data-i="0" style="cursor:pointer"><ellipse cx="230.0" cy="65.0" rx="62" ry="30" fill="#fbe9a0" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      <text x="230.0" y="61.0" text-anchor="middle" font-size="18">💡</text>
+      <text x="230.0" y="81.0" text-anchor="middle" font-family="Kalam" font-weight="700" font-size="13" fill="#211f1b">get an idea</text></g><g class="cyc" data-i="1" style="cursor:pointer"><ellipse cx="359.9" cy="140.0" rx="62" ry="30" fill="#cfe3f5" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      <text x="359.9" y="136.0" text-anchor="middle" font-size="18">🔍</text>
+      <text x="359.9" y="156.0" text-anchor="middle" font-family="Kalam" font-weight="700" font-size="13" fill="#211f1b">search for it</text></g><g class="cyc" data-i="2" style="cursor:pointer"><ellipse cx="359.9" cy="290.0" rx="62" ry="30" fill="#f4c7c0" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      <text x="359.9" y="286.0" text-anchor="middle" font-size="18">😩</text>
+      <text x="359.9" y="306.0" text-anchor="middle" font-family="Kalam" font-weight="700" font-size="12" fill="#211f1b">it's a crowded space</text></g><g class="cyc" data-i="3" style="cursor:pointer"><ellipse cx="230.0" cy="365.0" rx="62" ry="30" fill="#d9ecd9" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      <text x="230.0" y="361.0" text-anchor="middle" font-size="18">📚</text>
+      <text x="230.0" y="381.0" text-anchor="middle" font-family="Kalam" font-weight="700" font-size="13" fill="#211f1b">read more papers</text></g><g class="cyc" data-i="4" style="cursor:pointer"><ellipse cx="100.1" cy="290.0" rx="62" ry="30" fill="#fff3d6" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      <text x="100.1" y="286.0" text-anchor="middle" font-size="18">🎯</text>
+      <text x="100.1" y="306.0" text-anchor="middle" font-family="Kalam" font-weight="700" font-size="13" fill="#211f1b">find a small gap</text></g><g class="cyc" data-i="5" style="cursor:pointer"><ellipse cx="100.1" cy="140.0" rx="62" ry="30" fill="#e7dcf5" stroke="#211f1b" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      <text x="100.1" y="136.0" text-anchor="middle" font-size="18">⚔️</text>
+      <text x="100.1" y="156.0" text-anchor="middle" font-family="Kalam" font-weight="700" font-size="13" fill="#211f1b">attack it</text></g>
+          <text x="230" y="209" text-anchor="middle" font-family="Caveat" font-weight="700" font-size="30" fill="#b9471a">my research</text>
+          <text x="230" y="237" text-anchor="middle" font-family="Caveat" font-weight="700" font-size="30" fill="#b9471a">cycle</text>
+          <text id="cycsub" x="230" y="263" text-anchor="middle" font-family="Kalam" font-size="12.5" fill="#2c5ca3">(click a step)</text>
+          <g><text font-size="20">✏️<animateMotion dur="18s" repeatCount="indefinite" rotate="0"><mpath href="#loop"/></animateMotion></text></g>
+        </svg>
+        <div class="cap" style="font-family:Kalam">repeat until paper ↻ · every researcher knows this one</div>
+      </div>
+    </figure></div>
+  <div class="side right"></div>
+</div>
+
 <!-- ================= OTHER PROJECTS ================= -->
 <h2 class="section-title" id="projects"><span>things I built for fun</span></h2>
 <div class="row">
@@ -1040,6 +1075,11 @@
         sp.style.left=(x+(Math.random()-.5)*r.width*1.4)+'px'; sp.style.top=(y+Math.random()*r.height)+'px'; sp.style.fontSize=(10+Math.random()*14)+'px'; document.body.appendChild(sp);
         sp.animate([{transform:'translateY(0) scale(.4)',opacity:0},{transform:'translateY(-30px) scale(1)',opacity:1,offset:.3},{transform:'translateY(-'+(70+Math.random()*60)+'px) scale(.6)',opacity:0}],{duration:1600+Math.random()*800,easing:'ease-out'}).onfinish=function(){ sp.remove(); }; })(i); }
     });
+  })();
+
+  (function(){ var subs=["so excited!","…already published 3 times","sad for a day","notice what they all skipped","nobody did *this* part","build, run, write"], t=document.getElementById('cycsub'); if(!t) return;
+    document.querySelectorAll('#cycle .cyc').forEach(function(g){ g.addEventListener('click',function(){ t.textContent=subs[+g.dataset.i];
+      g.animate([{transform:'scale(1)'},{transform:'scale(1.08)'},{transform:'scale(1)'}],{duration:350}); }); });
   })();
 })();
 </script>
